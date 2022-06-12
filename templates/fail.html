@@ -20,7 +20,7 @@
         <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
         <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
         <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
-        <button class="layui-btn layui-btn-sm" lay-event="isClear">清理列表</button>
+        <button id="clear" class="layui-btn layui-btn-sm" lay-event="isClear">清理列表</button>
         <button class="layui-btn layui-btn-sm" lay-event="isTips">Tips：点击标题打开原网页</button>
     </div>
 </script>
@@ -80,10 +80,12 @@
                     break;
                 case 'isClear':
                     layer.msg('开始清理失败列表！')
+                    $("#clear").attr("disabled",true);
                     $.ajax({
                         url: '/clearFailPage', method: 'post', success: function (data) {
                             if (200 === data.code || '200' === data.code ){
                                 layer.msg(data.msg)
+                                $("#clear").attr("disabled",false);
                             }
                         }
                     })

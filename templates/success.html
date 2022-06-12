@@ -23,6 +23,7 @@
     </div>
 </script>
 <script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="copy">复制</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
@@ -107,7 +108,7 @@
                 , {field: 'publish_date', title: '发布时间', align: 'center', sort: true}
                 , {field: 'create_date', title: '下载时间', align: 'center', sort: true}
                 , {field: 'dir', title: '存储路径', align: 'center', sort: true}
-                , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 116}
+                , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 120}
             ]]
             , page: true
         });
@@ -152,9 +153,33 @@
                     });
                     layer.close(index);
                 });
+             } else if (obj.event === 'copy') {
+                const flag = copyText('http://t66y.com/htm_data/' + data.url); //传递文本
+                layer.msg(flag ? "复制成功！" : "复制失败！");
             }
         });
     });
+
+    function copyText(text) {
+        const textarea = document.createElement("input");//创建input对象
+        const currentFocus = document.activeElement;//当前获得焦点的元素
+        document.body.appendChild(textarea);//添加元素
+        textarea.value = text;
+        textarea.focus();
+        if (textarea.setSelectionRange)
+            textarea.setSelectionRange(0, textarea.value.length);//获取光标起始位置到结束位置
+        else
+            textarea.select();
+        let value;
+        try {
+            value = document.execCommand("copy");//执行复制
+        } catch (eo) {
+            value = false;
+        }
+        document.body.removeChild(textarea);//删除元素
+        currentFocus.focus();
+        return value;
+    }
 </script>
 
 </body>
