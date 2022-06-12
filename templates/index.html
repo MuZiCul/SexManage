@@ -10,7 +10,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
-    <link rel="stylesheet" href="{{ url_for('static',filename='layui/css/layui.css') }}" tppabs="http://res.layui.com/layui/dist/css/layui.css?t=1632428048355" media="all">
+    <script type="text/javascript" src="{{ url_for('static',filename='js/jquery-1.9.1.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='layui/css/layui.css') }}"
+          tppabs="http://res.layui.com/layui/dist/css/layui.css?t=1632428048355" media="all">
+    <script type="text/javascript">
+        function open_page(title) {
+            $('iframe').attr('src', title)
+        }
+    </script>
     <style>
         /* 移动端 */
         @media screen and (max-width: 768px) {
@@ -79,11 +86,11 @@
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree" lay-filter="test">
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:;">menu group 1</a>
+                    <a class="" href="javascript:;">数据统计</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">menu 1</a></dd>
-                        <dd><a href="javascript:;">menu 2</a></dd>
-                        <dd><a href="javascript:;">menu 3</a></dd>
+                        <dd class="layui-this"><a href="javascript:;" onclick="open_page('success')">成功数据统计</a></dd>
+                        <dd><a href="javascript:;" onclick="open_page('fail')">失败数据统计</a></dd>
+                        <dd><a href="javascript:;" onclick="open_page('failImg')">失败数据统计</a></dd>
                         <dd><a href="">the links</a></dd>
                     </dl>
                 </li>
@@ -101,55 +108,43 @@
         </div>
     </div>
 
-    <div class="layui-body">
+    <div class="layui-body" id="getbody">
         <!-- 内容主体区域 -->
         <div style="padding: 15px;">
-            内容主体区域
-
-            <br><br>
-
-            <blockquote class="layui-elem-quote layui-text">
-                <ul>
-
-
-                    <!--<li>
-                      该页面只是简单的管理系统的界面基础布局示例，并不是一整套界面布局方案，您可以关注基于 layui 的通用型管理系统界面模板解决方案：
-                      <a href="/layuiadmin/" target="_blank" class="layui-btn">layuiAdmin</a>
-                    </li>-->
-                    <li>
-                        layui 之所以赢得如此多人的青睐，更多是在于它“前后界面兼备”的能力。既可编织出绚丽的前台页面，又可满足繁杂的管理系统的界面需求。
-                        <br>layui 管理基本布局， 致力于让每一位开发者都能轻松搭建自己的管理系统模板。
-                    </li>
-                </ul>
-            </blockquote>
-
-            <a href="../doc/element/layout.html#admin" tppabs="http://www.layui.com/doc/element/layout.html#admin"
-               target="_blank" class="layui-btn">查看该布局代码</a>
-            <br><br><br>
-
-            <div class="layui-card layui-panel">
-                <div class="layui-card-header">
-                    下面是充数内容，为的是出现滚动条
-                </div>
-                <div class="layui-card-body">
-                    充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>你还真滑到了底部呀
-                </div>
-            </div>
-            <br><br>
-
-
+            <iframe src="/success" id="demoAdmin" style="width: 100%; min-height: 600px; border-radius: 2px;"
+                    frameborder="0"></iframe>
         </div>
     </div>
 
-    <div class="layui-footer">
+    <div class="layui-footer" id="getfooter">
         <!-- 底部固定区域 -->
         底部固定区域
     </div>
 </div>
-<script src="{{ url_for('static',filename='layui/layui.js') }}" tppabs="http://res.layui.com/layui/dist/layui.js?t=1632428048355"
+<script src="{{ url_for('static',filename='layui/layui.js') }}"
+        tppabs="http://res.layui.com/layui/dist/layui.js?t=1632428048355"
         charset="utf-8"></script>
-<script>
+<script type="text/javascript">
     //JS
+    const getWindowInfo = () => {
+        const bodyweight = document.getElementById("getbody").offsetHeight - document.getElementById("getfooter").offsetHeight - 30
+        $('iframe').css('height', bodyweight)
+    };
+    //防抖
+    const debounce = (fn, delay) => {
+        let timer;
+        return function () {
+            if (timer) {
+                clearTimeout(timer);
+            }
+            timer = setTimeout(() => {
+                fn();
+            }, delay);
+        }
+    };
+    const cancalDebounce = debounce(getWindowInfo, 300);
+    window.addEventListener('resize', cancalDebounce);
+
     layui.use(['element', 'layer', 'util'], function () {
         var element = layui.element
             , layer = layui.layer

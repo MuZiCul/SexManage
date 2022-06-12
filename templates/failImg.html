@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <title>下载失败数据</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static',filename='layui/css/layui.css') }}"
+          tppabs="http://res.layui.com/layui/dist/css/layui.css?t=1632428048355" media="all">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+
+<table class="layui-hide" id="test" lay-filter="test"></table>
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+        <button class="layui-btn layui-btn-sm" lay-event="isTips">Tips：点击标题打开原网页</button>
+    </div>
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="copy">复制</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+
+<script src="{{ url_for('static',filename='layui/layui.js') }}"
+        tppabs="http://res.layui.com/layui/dist/layui.js?t=1632428048355"></script>
+
+<script type="text/javascript">
+    layui.use('table', function () {
+        const table = layui.table;
+        table.render({
+            elem: '#test'
+            , url: '/fiu'
+            , toolbar: '#toolbarDemo'
+            , title: '失败信息表'
+            , totalRow: true
+            , cellMinWidth: 80
+            , cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                , {field: 'id', title: 'ID', fixed: 'left', sort: true, width: 80, totalRowText: '合计'}
+                , {
+                    field: 'url', title: '标题', align: 'center', templet: function (res) {
+                        return '<a href=' + res.url + '><em>' + res.url + '</em></a>'
+                    }
+                }
+                , {field: 'create_date', title: '创建时间', align: 'center', sort: true}
+                , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 174}
+            ]]
+            , page: true
+        });
+
+        //工具栏事件
+        table.on('toolbar(test)', function (obj) {
+            const checkStatus = table.checkStatus(obj.config.id);
+            let value;
+            switch (obj.event) {
+                case 'getCheckData':
+                    value = checkStatus.data;
+                    layer.alert(JSON.stringify(value));
+                    break;
+                case 'getCheckLength':
+                    value = checkStatus.data;
+                    layer.msg('选中了：' + value.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选' : '未全选')
+                    break;
+                case 'isTips':
+                    layer.msg('Tips：点击Url打开可原网页哦！')
+                    break;
+            }
+        });
+        //监听行工具事件
+        table.on('tool(test)', function (obj) {
+            const data = obj.data;
+            //console.log(obj)
+            if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if (obj.event === 'edit') {
+                layer.prompt({
+                    formType: 2
+                    , value: data.url
+                }, function (value, index) {
+                    obj.update({
+                        email: value
+                    });
+                    layer.close(index);
+                });
+            } else if (obj.event === 'copy') {
+                const flag = copyText(data.url); //传递文本
+                layer.msg(flag ? "复制成功！" : "复制失败！");
+            }
+        });
+    });
+
+    function copyText(text) {
+        const textarea = document.createElement("input");//创建input对象
+        const currentFocus = document.activeElement;//当前获得焦点的元素
+        document.body.appendChild(textarea);//添加元素
+        textarea.value = text;
+        textarea.focus();
+        if (textarea.setSelectionRange)
+            textarea.setSelectionRange(0, textarea.value.length);//获取光标起始位置到结束位置
+        else
+            textarea.select();
+        let flag;
+        try {
+            flag = document.execCommand("copy");//执行复制
+        } catch (eo) {
+            flag = false;
+        }
+        document.body.removeChild(textarea);//删除元素
+        currentFocus.focus();
+        return flag;
+    }
+</script>
+
+</body>
+</html>
