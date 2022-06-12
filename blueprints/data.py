@@ -7,7 +7,7 @@ from flask import (
     request, jsonify,
 )
 from config.exts import db
-from config.models import SuccessPageUrlModel, FailPageUrlModel, FailImgModel
+from config.models import SuccessPageUrlModel, FailPageUrlModel, FailImgModel, ConfigModel
 
 bp = Blueprint('data', __name__, url_prefix='/')
 
@@ -16,7 +16,7 @@ bp = Blueprint('data', __name__, url_prefix='/')
 def spu():
     page = int(request.args.get('page'))
     limit = int(request.args.get('limit'))
-    start = (page-1)*limit
+    start = (page - 1) * limit
     end = start + limit
     data = SuccessPageUrlModel.query.order_by(db.text('-create_date')).all()
     data_list = []
@@ -59,7 +59,28 @@ def spu():
 
 @bp.route('/success', methods=['GET', 'POST'])
 def success():
-    return render_template('success.html')
+    all_size = 0
+    img_size = 0
+    phones = 0
+    pcs = 0
+    data = SuccessPageUrlModel.query.all()
+    for i in data:
+        if i.all_size:
+            all_size += float(i.all_size)
+        if i.img_size:
+            img_size += i.img_size
+        if i.phoneImg:
+            phones += i.phoneImg
+        if i.pcImg:
+            pcs += i.pcImg
+    last_time = ConfigModel.query.filter_by(id=1).first()
+    if last_time:
+        last_date = last_time.last_date
+    else:
+        last_date = '不详'
+    dic = {'all_size': round(all_size, 2), 'img_size': img_size, 'phones': phones, 'pcs': pcs, 'last_time': last_date}
+
+    return render_template('success.html', data=dic)
 
 
 @bp.route('/fail', methods=['GET', 'POST'])

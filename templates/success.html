@@ -20,6 +20,9 @@
         <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
         <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
         <button class="layui-btn layui-btn-sm" lay-event="isTips">Tips：点击标题打开原网页</button>
+        {% if data %}
+        <button class="layui-btn layui-btn-sm" lay-event="isTips">总计大小：{{ data.all_size }}MB，图片总数：{{ data.img_size }}P，手机壁纸：{{ data.phones }}P，电脑壁纸：{{ data.pcs }}P，最后下载时间：{{ data.last_time }}</button>
+        {% endif %}
     </div>
 </script>
 <script type="text/html" id="barDemo">
@@ -62,7 +65,7 @@
                     sort: true,
                     totalRow: true,
                     templet: function (res) {
-                        return res.all_size + ' MB'
+                        return res.all_size + 'MB'
                     }
                 }
                 , {
@@ -72,7 +75,7 @@
                     sort: true,
                     totalRow: true,
                     templet: function (res) {
-                        return res.avg_size + ' MB'
+                        return res.avg_size + 'MB'
                     }
                 }
                 , {
@@ -82,7 +85,7 @@
                     sort: true,
                     totalRow: true,
                     templet: function (res) {
-                        return res.img_size + ' P'
+                        return res.img_size + 'P'
                     }
                 }
                 , {
@@ -92,7 +95,7 @@
                     sort: true,
                     totalRow: true,
                     templet: function (res) {
-                        return res.pcImg + ' P'
+                        return res.pcImg + 'P'
                     }
                 }
                 , {
@@ -102,7 +105,7 @@
                     sort: true,
                     totalRow: true,
                     templet: function (res) {
-                        return res.phoneImg + ' P'
+                        return res.phoneImg + 'P'
                     }
                 }
                 , {field: 'publish_date', title: '发布时间', align: 'center', sort: true}

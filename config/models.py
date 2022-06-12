@@ -30,6 +30,13 @@ class SuccessPageUrlModel(db.Model):
     create_date = db.Column(db.DateTime, default=datetime.now)
 
 
+class ConfigModel(db.Model):
+    __tablename__ = "config"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    last_date = db.Column(db.String(200), default='')
+    create_date = db.Column(db.DateTime, default=datetime.now)
+
+
 class FailPageUrlModel(db.Model):
     __tablename__ = "fpu"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
