@@ -6,6 +6,7 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script type="text/javascript" src="{{ url_for('static',filename='js/jquery-1.9.1.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static',filename='layui/css/layui.css') }}"
           tppabs="http://res.layui.com/layui/dist/css/layui.css?t=1632428048355" media="all">
     <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
@@ -78,9 +79,15 @@
                     layer.msg('Tips：点击标题打开可原网页哦！')
                     break;
                 case 'isClear':
-                    layer.msg('清理失败列表！')
+                    layer.msg('开始清理失败列表！')
+                    $.ajax({
+                        url: '/clearFailPage', method: 'post', success: function (data) {
+                            if (200 === data.code || '200' === data.code ){
+                                layer.msg(data.msg)
+                            }
+                        }
+                    })
                     break;
-
             }
         });
         //监听行工具事件

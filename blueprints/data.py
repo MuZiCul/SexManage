@@ -1,9 +1,10 @@
 import json
+from datetime import datetime
 
 from flask import (
     Blueprint,
     render_template,
-    request,
+    request, jsonify,
 )
 from config.exts import db
 from config.models import SuccessPageUrlModel, FailPageUrlModel, FailImgModel
@@ -105,3 +106,23 @@ def fiu():
         data_list.append(dit)
     dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data), 'data': data_list}
     return dic
+
+
+@bp.route('/clearFailPage', methods=['GET', 'POST'])
+def clearFailPage():
+    start = datetime.now()
+    failData = FailPageUrlModel.query.all()
+    SuccessData = SuccessPageUrlModel.query.all()
+    SuccessDataUrlList = []
+    for i in SuccessData:
+        SuccessDataUrlList.append(i.url)
+    for i in failData:
+        if i.url in SuccessDataUrlList:
+            failPageUrl = FailPageUrlModel.query.filter_by(url=i.url).all()
+            for j in failPageUrl:
+                pageUrl = FailPageUrlModel.query.filter_by(id=j.id).first()
+                db.session.delete(pageUrl)
+                db.session.commit()
+    end = datetime.now()
+    time = (end - start).seconds
+    return jsonify({'code': 200, 'msg': '清理完成，本次用时 {:.0f}分 {:.0f}秒'.format(time // 60, time % 60)})
