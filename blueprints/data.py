@@ -32,6 +32,12 @@ def spu():
                 url = url.split('data/')[1]
         else:
             url = '暂无数据'
+        if i.publish_date:
+            publish_date = i.publish_date
+            if 'Posted' in publish_date:
+                publish_date = publish_date[7:]
+        else:
+            publish_date = '暂无数据'
 
         dit = {'id': i.id if i.id else '暂无信息',
                'url': url,
@@ -42,7 +48,7 @@ def spu():
                'avg_size': i.avg_size if i.avg_size else '暂无信息',
                'pcImg': i.pcImg if i.pcImg == 0 or i.pcImg else '暂无信息',
                'dir': i.dir if i.dir else '暂无信息',
-               'publish_date': i.publish_date if i.publish_date else '暂无数据',
+               'publish_date': publish_date,
                'phoneImg': i.phoneImg if i.phoneImg == 0 or i.phoneImg else '暂无信息',
                'img_size': i.img_size if i.img_size else '暂无信息'}
         data_list.append(dit)
