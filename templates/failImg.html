@@ -19,7 +19,7 @@
         <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
         <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
         <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
-        <button class="layui-btn layui-btn-sm" lay-event="isTips">Tips：点击标题打开原网页</button>
+        <button class="layui-btn layui-btn-sm" lay-event="isTips">Tips：点击Url打开原网页</button>
     </div>
 </script>
 <script type="text/html" id="barDemo">
@@ -46,7 +46,7 @@
                 {type: 'checkbox', fixed: 'left'}
                 , {field: 'id', title: 'ID', fixed: 'left', sort: true, width: 80, totalRowText: '合计'}
                 , {
-                    field: 'url', title: '标题', align: 'center', templet: function (res) {
+                    field: 'url', title: 'Url', align: 'center', templet: function (res) {
                         return '<a href=' + res.url + '><em>' + res.url + '</em></a>'
                     }
                 }
