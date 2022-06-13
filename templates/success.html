@@ -6,6 +6,7 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script type="text/javascript" src="{{ url_for('static',filename='js/jquery-1.9.1.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static',filename='layui/css/layui.css') }}"
           tppabs="http://res.layui.com/layui/dist/css/layui.css?t=1632428048355" media="all">
     <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
@@ -16,18 +17,19 @@
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
-        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+{#        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>#}
+{#        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>#}
+{#        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>#}
         <button class="layui-btn layui-btn-sm" lay-event="isTips">Tips：点击标题打开原网页</button>
         {% if data %}
-        <button class="layui-btn layui-btn-sm" lay-event="isTips">总计大小：{{ data.all_size }}MB，图片总数：{{ data.img_size }}P，手机壁纸：{{ data.phones }}P，电脑壁纸：{{ data.pcs }}P，最后下载时间：{{ data.last_time }}</button>
+            <button class="layui-btn layui-btn-sm" lay-event="isTips">
+                总计大小：{{ data.all_size }}MB，图片总数：{{ data.img_size }}P，手机壁纸：{{ data.phones }}P，电脑壁纸：{{ data.pcs }}P，最后下载时间：{{ data.last_time }}</button>
         {% endif %}
     </div>
 </script>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="copy">复制</a>
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn  layui-btn-normal layui-btn-xs" lay-event="copy">复制</a>
+    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="reDownload">重下</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
@@ -50,7 +52,11 @@
                 , {field: 'id', title: 'ID', fixed: 'left', sort: true, width: 80, totalRowText: '合计'}
                 , {
                     field: 'title', title: '标题', align: 'center', templet: function (res) {
-                        return '<a href=http://t66y.com/htm_data/' + res.url + '><em>' + res.title + '</em></a>'
+                        if (res.url.includes("read")) {
+                            return '<a href=http://t66y.com/' + res.url + '><em>' + res.title + '</em></a>'
+                        } else {
+                            return '<a href=http://t66y.com/htm_data/' + res.url + '><em>' + res.title + '</em></a>'
+                        }
                     }
                 }
                 , {
@@ -111,7 +117,7 @@
                 , {field: 'publish_date', title: '发布时间', align: 'center', sort: true}
                 , {field: 'create_date', title: '下载时间', align: 'center', sort: true}
                 , {field: 'dir', title: '存储路径', align: 'center', sort: true}
-                , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 120}
+                , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 174}
             ]]
             , page: true
         });
@@ -135,6 +141,7 @@
                 case 'isTips':
                     layer.msg('Tips：点击标题打开可原网页哦！')
                     break;
+
             }
         });
         //监听行工具事件
@@ -156,9 +163,27 @@
                     });
                     layer.close(index);
                 });
-             } else if (obj.event === 'copy') {
-                const flag = copyText('http://t66y.com/htm_data/' + data.url); //传递文本
+            } else if (obj.event === 'copy') {
+                let flag;
+                if (data.url.includes("read")) {
+                    flag = copyText('http://t66y.com/' + data.url); //传递文本
+                } else {
+                    flag = copyText('http://t66y.com/htm_data/' + data.url); //传递文本
+                }
                 layer.msg(flag ? "复制成功！" : "复制失败！");
+            } else if (obj.event === 'reDownload') {
+                $.ajax({
+                    url: '/addAgainDownload', method: 'post', data: {
+                        'type': 1, 'id': data.id
+                    }, success: function (data) {
+                        if (200 === data.code || '200' === data.code) {
+                            obj.del();
+                            layer.msg(data.msg)
+                        } else {
+                            layer.msg(data.msg)
+                        }
+                    }
+                })
             }
         });
     });

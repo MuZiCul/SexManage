@@ -66,6 +66,8 @@ if __name__ == '__main__':
     aesCryptor = Aescrypt()
     text = "Ll001123.."
     en_text = aesCryptor.encryption(text)
+    ttt = generate_password_hash('4f028936baef9c15bc49378199cc8692')
+    print('gene',ttt)
     print("密文:", str(en_text))
     print(check_password_hash('pbkdf2:sha256:260000$m3qeYG0yKBLvFeRl$5d583d55d903005240b883e88330cc2cf5af1fba74622d6439e57bcd8340a4fe',en_text))
 

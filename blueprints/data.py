@@ -6,13 +6,16 @@ from flask import (
     render_template,
     request, jsonify,
 )
+
+from config.decorators import login_required
 from config.exts import db
-from config.models import SuccessPageUrlModel, FailPageUrlModel, FailImgModel, ConfigModel
+from config.models import SuccessPageUrlModel, FailPageUrlModel, FailImgModel, ConfigModel, DownloadAgainPageUrlModel
 
 bp = Blueprint('data', __name__, url_prefix='/')
 
 
 @bp.route('/spu', methods=['GET', 'POST'])
+@login_required
 def spu():
     page = int(request.args.get('page'))
     limit = int(request.args.get('limit'))
@@ -58,6 +61,7 @@ def spu():
 
 
 @bp.route('/success', methods=['GET', 'POST'])
+@login_required
 def success():
     all_size = 0
     img_size = 0
@@ -84,16 +88,25 @@ def success():
 
 
 @bp.route('/fail', methods=['GET', 'POST'])
+@login_required
 def fail():
     return render_template('fail.html')
 
 
 @bp.route('/failImg', methods=['GET', 'POST'])
+@login_required
 def failImg():
     return render_template('failImg.html')
 
 
+@bp.route('/reDownload', methods=['GET', 'POST'])
+@login_required
+def reDownload():
+    return render_template('reDownload.html')
+
+
 @bp.route('/fpu', methods=['GET', 'POST'])
+@login_required
 def fpu():
     page = int(request.args.get('page'))
     limit = int(request.args.get('limit'))
@@ -118,7 +131,27 @@ def fpu():
     return dic
 
 
+@bp.route('/rpu', methods=['GET', 'POST'])
+@login_required
+def rpu():
+    page = int(request.args.get('page'))
+    limit = int(request.args.get('limit'))
+    start = (page - 1) * limit
+    end = start + limit
+    data = DownloadAgainPageUrlModel.query.order_by(db.text('-create_date')).all()
+    data_list = []
+    for i in data[start:end]:
+        dit = {'id': i.id if i.id else '暂无信息',
+               'url': i.url if i.url else '暂无信息',
+               'create_date': str(i.create_date) if i.create_date else '暂无信息',
+               'title': i.title if i.title else '暂无信息'}
+        data_list.append(dit)
+    dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data), 'data': data_list}
+    return dic
+
+
 @bp.route('/fiu', methods=['GET', 'POST'])
+@login_required
 def fiu():
     data = FailImgModel.query.all()
     data_list = []
@@ -130,6 +163,7 @@ def fiu():
 
 
 @bp.route('/clearFailPage', methods=['GET', 'POST'])
+@login_required
 def clearFailPage():
     start = datetime.now()
     failData = FailPageUrlModel.query.all()
@@ -147,3 +181,29 @@ def clearFailPage():
     end = datetime.now()
     time = (end - start).seconds
     return jsonify({'code': 200, 'msg': '清理完成，本次用时 {:.0f}分 {:.0f}秒'.format(time // 60, time % 60)})
+
+
+@bp.route('/addAgainDownload', methods=['GET', 'POST'])
+@login_required
+def addAgainDownload():
+    try:
+        type = request.form.get('type')
+        id = request.form.get('id')
+        if type == 1 or type == '1':
+            pageUrl = SuccessPageUrlModel.query.filter_by(id=id).first()
+            again = DownloadAgainPageUrlModel(url=pageUrl.url, title=pageUrl.title)
+            db.session.add(again)
+            db.session.commit()
+            db.session.delete(pageUrl)
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': '添加到重新下载列表成功！'})
+        elif type == 0 or type == '0':
+            pageUrl = FailPageUrlModel.query.filter_by(id=id).first()
+            again = DownloadAgainPageUrlModel(url=pageUrl.url, title=pageUrl.title)
+            db.session.add(again)
+            db.session.commit()
+            db.session.delete(pageUrl)
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': '添加到重新下载列表成功！'})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': f'添加失败:{str(e)}'})

@@ -8,5 +8,5 @@ def login_required(fun):
         if hasattr(g, 'user'):
             return fun(*args, **kwargs)
         else:
-            return redirect(url_for('user.login'))
+            return redirect(url_for('login.login'))
     return wrapper

@@ -34,7 +34,7 @@
     <div class="col"></div>
     <div class="jumbotron col">
         <hr class="my-4">
-        <form method="post" action="{{ url_for('user.login') }}" onsubmit="return CheckKeyword('login')">
+        <form method="post" action="{{ url_for('login.login') }}" onsubmit="return CheckKeyword('login')">
             <div class="form-group">
                 <label for="account">ACCOUNT</label><span class="required" style="color:red">*</span>
                 <input type="text" required="required" placeholder="email/account" name="account" id="account"
@@ -45,10 +45,10 @@
                 <input required="required" placeholder="6-20 digits or letters" type="password"
                        class="form-control" id="password" onkeyup="pwd_64(this,'password_64')" value="{% if data %}{{ data.password.data }}{% endif %}">
                <input name="password" type="password" id="password_64" style="display: none">
-                <a style="font-size: 15px;float: left;padding-top: 5px;padding-bottom: 20px;"
-                   href="{{ url_for('user.register') }}">Account? To Register!</a>
-                <a style="font-size: 15px;float: right;padding-top: 5px;padding-bottom: 20px;"
-                   href="{{ url_for('user.retrieve_password') }}">Password? To Retrieve!</a>
+{#                <a style="font-size: 15px;float: left;padding-top: 5px;padding-bottom: 20px;"#}
+{#                   href="{{ url_for('login.register') }}">Account? To Register!</a>#}
+{#                <a style="font-size: 15px;float: right;padding-top: 5px;padding-bottom: 20px;"#}
+{#                   href="{{ url_for('login.retrieve_password') }}">Password? To Retrieve!</a>#}
             </div>
             <script type="text/javascript">
                 {% with message = get_flashed_messages(with_categories=true) %}
