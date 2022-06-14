@@ -4,7 +4,6 @@ from flask import (
     request,
     redirect,
     url_for,
-    jsonify,
     session,
     flash,
     g
@@ -12,7 +11,6 @@ from flask import (
 from werkzeug.security import check_password_hash
 
 from blueprints.forms import LoginForm
-from config.decorators import login_required
 from config.models import UserModel
 from utils.Aescrypt import Aescrypt
 
@@ -66,6 +64,13 @@ def login():
 
 @bp.route('/logoff')
 def logoff():
+    session.clear()
+    flash("账号已退出，3秒后跳转到首页！")
+    return render_template('login.html')
+
+
+@bp.route('/110')
+def logoff110():
     session.clear()
     flash("账号已退出，3秒后跳转到首页！")
     return render_template('login.html')

@@ -15,7 +15,52 @@
           tppabs="http://res.layui.com/layui/dist/css/layui.css?t=1632428048355" media="all">
     <script type="text/javascript">
         function open_page(title) {
-            $('iframe').attr('src', title)
+            switch (title) {
+                case 'quality_9':
+                    window.sessionStorage['quality'] = 9
+                    $('iframe').attr('src', 'quality?quality=9');
+                    break;
+                case 'quality_8':
+                    window.sessionStorage['quality'] = 8
+                    $('iframe').attr('src', 'quality?quality=8');
+                    break;
+                case 'quality_7':
+                    window.sessionStorage['quality'] = 7
+                    $('iframe').attr('src', 'quality?quality=7');
+                    break;
+                case 'quality_6':
+                    window.sessionStorage['quality'] = 6
+                    $('iframe').attr('src', 'quality?quality=6');
+                    break;
+                case 'quality_5':
+                    window.sessionStorage['quality'] = 5
+                    $('iframe').attr('src', 'quality?quality=5');
+                    break;
+                case 'quality_4':
+                    window.sessionStorage['quality'] = 4
+                    $('iframe').attr('src', 'quality?quality=4');
+                    break;
+                case 'quality_3':
+                    window.sessionStorage['quality'] = 3
+                    $('iframe').attr('src', 'quality?quality=3');
+                    break;
+                case 'quality_2':
+                    window.sessionStorage['quality'] = 2
+                    $('iframe').attr('src', 'quality?quality=2');
+                    break;
+                case 'quality_1':
+                    window.sessionStorage['quality'] = 1
+                    $('iframe').attr('src', 'quality?quality=1');
+                    break;
+                case 'quality_0':
+                    window.sessionStorage['quality'] = 0
+                    $('iframe').attr('src', 'quality?quality=0');
+                    break;
+                default:
+                    $('iframe').attr('src', title)
+
+            }
+
         }
     </script>
     <style>
@@ -37,30 +82,32 @@
 
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
-        <div class="layui-logo layui-hide-xs layui-bg-black">                <img src="https://s2.loli.net/2022/06/13/oIFlR9tV1QiOfZm.jpg"
-                         tppabs="https://s2.loli.net/2022/06/13/oIFlR9tV1QiOfZm.jpg"
-                         class="layui-nav-img">爬虫后台</div>
+        <div class="layui-logo layui-hide-xs layui-bg-black"><img
+                src="https://s2.loli.net/2022/06/13/oIFlR9tV1QiOfZm.jpg"
+                tppabs="https://s2.loli.net/2022/06/13/oIFlR9tV1QiOfZm.jpg"
+                class="layui-nav-img">爬虫后台
+        </div>
         <!-- 头部区域（可配合layui 已有的水平导航） -->
-{#        <ul class="layui-nav layui-layout-left">#}
-{#            <!-- 移动端显示 -->#}
-{#            <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">#}
-{#                <i class="layui-icon layui-icon-spread-left"></i>#}
-{#            </li>#}
-{##}
-{#            <li class="layui-nav-item layui-hide-xs"><a href="">nav 1</a></li>#}
-{#            <li class="layui-nav-item layui-hide-xs"><a href="">nav 2</a></li>#}
-{#            <li class="layui-nav-item layui-hide-xs"><a href="">nav 3</a></li>#}
-{#            <li class="layui-nav-item">#}
-{#                <a href="javascript:;">nav groups</a>#}
-{#                <dl class="layui-nav-child">#}
-{#                    <dd><a href="">menu 11</a></dd>#}
-{#                    <dd><a href="">menu 22</a></dd>#}
-{#                    <dd><a href="">menu 33</a></dd>#}
-{#                </dl>#}
-{#            </li>#}
-{##}
-{##}
-{#        </ul>#}
+        {#        <ul class="layui-nav layui-layout-left">#}
+        {#            <!-- 移动端显示 -->#}
+        {#            <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">#}
+        {#                <i class="layui-icon layui-icon-spread-left"></i>#}
+        {#            </li>#}
+        {##}
+        {#            <li class="layui-nav-item layui-hide-xs"><a href="">nav 1</a></li>#}
+        {#            <li class="layui-nav-item layui-hide-xs"><a href="">nav 2</a></li>#}
+        {#            <li class="layui-nav-item layui-hide-xs"><a href="">nav 3</a></li>#}
+        {#            <li class="layui-nav-item">#}
+        {#                <a href="javascript:;">nav groups</a>#}
+        {#                <dl class="layui-nav-child">#}
+        {#                    <dd><a href="">menu 11</a></dd>#}
+        {#                    <dd><a href="">menu 22</a></dd>#}
+        {#                    <dd><a href="">menu 33</a></dd>#}
+        {#                </dl>#}
+        {#            </li>#}
+        {##}
+        {##}
+        {#        </ul>#}
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item layui-hide layui-show-md-inline-block">
                 <a href="javascript:;">
@@ -70,16 +117,16 @@
                     {% if data %}{{ data.get('username') }}{% endif %}
                 </a>
                 <dl class="layui-nav-child">
-{#                    <dd><a href="">Your Profile</a></dd>#}
-{#                    <dd><a href="">Settings</a></dd>#}
-                    <dd><a  href="{{ url_for('login.logoff') }}">Sign out</a></dd>
+                    {#                    <dd><a href="">Your Profile</a></dd>#}
+                    {#                    <dd><a href="">Settings</a></dd>#}
+                    <dd><a href="{{ url_for('login.logoff') }}">Sign out</a></dd>
                 </dl>
             </li>
-{#            <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>#}
-{#                <a href="javascript:;">#}
-{#                    <i class="layui-icon layui-icon-more-vertical"></i>#}
-{#                </a>#}
-{#            </li>#}
+            {#            <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>#}
+            {#                <a href="javascript:;">#}
+            {#                    <i class="layui-icon layui-icon-more-vertical"></i>#}
+            {#                </a>#}
+            {#            </li>#}
         </ul>
     </div>
 
@@ -92,6 +139,7 @@
                     <dl class="layui-nav-child">
                         <dd class="layui-this"><a href="javascript:;" onclick="open_page('success')">成功数据统计</a></dd>
                         <dd><a href="javascript:;" onclick="open_page('fail')">失败数据统计</a></dd>
+                        <dd><a href="javascript:;" onclick="open_page('quality4list')">质量评价统计</a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item">
@@ -101,6 +149,21 @@
                     </dl>
                 </li>
                 <li class="layui-nav-item"><a href="javascript:;" onclick="open_page('reDownload')">重新下载列表</a></li>
+                <li class="layui-nav-item">
+                    <a>质量分类统计</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;" onclick="open_page('quality_8')">巨顶质量</a></dd>
+                        <dd><a href="javascript:;" onclick="open_page('quality_7')">顶级质量</a></dd>
+                        <dd><a href="javascript:;" onclick="open_page('quality_6')">超高质量</a></dd>
+                        <dd><a href="javascript:;" onclick="open_page('quality_5')">高清质量</a></dd>
+                        <dd><a href="javascript:;" onclick="open_page('quality_4')">标清质量</a></dd>
+                        <dd><a href="javascript:;" onclick="open_page('quality_3')">清晰质量</a></dd>
+                        <dd><a href="javascript:;" onclick="open_page('quality_2')">一般质量</a></dd>
+                        <dd><a href="javascript:;" onclick="open_page('quality_1')">劣质质量</a></dd>
+                        <dd><a href="javascript:;" onclick="open_page('quality_0')">垃圾质量</a></dd>
+                        <dd><a href="javascript:;" onclick="open_page('quality_9')">含有动图</a></dd>
+                    </dl>
+                </li>
             </ul>
         </div>
     </div>
@@ -109,7 +172,7 @@
         <!-- 内容主体区域 -->
         <div style="padding: 15px;">
             <iframe src="/success" id="demoAdmin" style="width: 100%; min-height: 600px; border-radius: 2px;"
-                    frameborder="0"></iframe>
+                    frameborder="0" target="_top"></iframe>
         </div>
     </div>
 

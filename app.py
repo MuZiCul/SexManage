@@ -1,7 +1,7 @@
 from flask import Flask, session, g, redirect, url_for
 import config.config as config
 from config.exts import db, mail
-from blueprints import index_bp, data_bp, user_bp, login_bp
+from blueprints import index_bp, data_bp, user_bp, login_bp, quality_bp
 from flask_migrate import Migrate
 from config.models import UserModel
 
@@ -16,6 +16,7 @@ app.register_blueprint(index_bp)
 app.register_blueprint(data_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(login_bp)
+app.register_blueprint(quality_bp)
 
 
 @app.route('/favicon.ico')
@@ -60,5 +61,5 @@ def demo2(error):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=5002)
 

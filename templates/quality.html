@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <title>质量分类表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script type="text/javascript" src="{{ url_for('static',filename='js/jquery-1.9.1.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='layui/css/layui.css') }}"
+          tppabs="http://res.layui.com/layui/dist/css/layui.css?t=1632428048355" media="all">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+
+<table class="layui-hide" id="test" lay-filter="test"></table>
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+{#        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>#}
+{#        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>#}
+{#        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>#}
+        <button class="layui-btn layui-btn-sm" lay-event="isTips">Tips：点击标题打开原网页</button>
+        {% if data %}
+            <button class="layui-btn layui-btn-sm">
+                总计大小：{{ data.all_size }}MB，图片总数：{{ data.img_size }}P，手机壁纸：{{ data.phones }}P，电脑壁纸：{{ data.pcs }}P，最后下载时间：{{ data.last_time }}</button>
+        {% endif %}
+    </div>
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn  layui-btn-normal layui-btn-xs" lay-event="copy">复制</a>
+    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="reDownload">重下</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+
+<script src="{{ url_for('static',filename='layui/layui.js') }}"
+        tppabs="http://res.layui.com/layui/dist/layui.js?t=1632428048355"></script>
+
+<script type="text/javascript">
+    layui.use('table', function () {
+        const table = layui.table;
+        table.render({
+            elem: '#test'
+            , url: '/getQuality'
+            , toolbar: '#toolbarDemo'
+            , title: '质量分类表'
+            , totalRow: true
+            , cellMinWidth: 80
+            , cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                , {field: 'id', title: 'ID', fixed: 'left', sort: true, width: 80, totalRowText: '合计'}
+                , {
+                    field: 'title', title: '标题', align: 'center', templet: function (res) {
+                        if (res.url.includes("read")) {
+                            return '<a href=http://t66y.com/' + res.url + '><em>' + res.title + '</em></a>'
+                        } else {
+                            return '<a href=http://t66y.com/htm_data/' + res.url + '><em>' + res.title + '</em></a>'
+                        }
+                    }
+                }
+                , {
+                    field: 'all_size',
+                    title: '总大小',
+                    align: 'center',
+                    sort: true,
+                    totalRow: true,
+                    templet: function (res) {
+                        return res.all_size + 'MB'
+                    }
+                }
+                , {
+                    field: 'avg_size',
+                    title: '平均大小',
+                    align: 'center',
+                    sort: true,
+                    totalRow: true,
+                    templet: function (res) {
+                        return res.avg_size + 'MB'
+                    }
+                }
+                , {
+                    field: 'img_size',
+                    title: '图片个数',
+                    align: 'center',
+                    sort: true,
+                    totalRow: true,
+                    templet: function (res) {
+                        return res.img_size + 'P'
+                    }
+                }
+                , {
+                    field: 'pcImg',
+                    title: '电脑壁纸',
+                    align: 'center',
+                    sort: true,
+                    totalRow: true,
+                    templet: function (res) {
+                        return res.pcImg + 'P'
+                    }
+                }
+                , {
+                    field: 'phoneImg',
+                    title: '手机壁纸',
+                    align: 'center',
+                    sort: true,
+                    totalRow: true,
+                    templet: function (res) {
+                        return res.phoneImg + 'P'
+                    }
+                }
+                , {field: 'publish_date', title: '发布时间', align: 'center', sort: true}
+                , {field: 'create_date', title: '下载时间', align: 'center', sort: true}
+                , {field: 'dir', title: '存储路径', align: 'center', sort: true}
+                , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 174}
+            ]]
+            , page: true
+        });
+
+        //工具栏事件
+        table.on('toolbar(test)', function (obj) {
+            const checkStatus = table.checkStatus(obj.config.id);
+            let value;
+            switch (obj.event) {
+                case 'getCheckData':
+                    value = checkStatus.data;
+                    layer.alert(JSON.stringify(value));
+                    break;
+                case 'getCheckLength':
+                    value = checkStatus.data;
+                    layer.msg('选中了：' + value.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选' : '未全选')
+                    break;
+                case 'isTips':
+                    layer.msg('Tips：点击标题可打开原网页哦！')
+                    break;
+
+            }
+        });
+        //监听行工具事件
+        table.on('tool(test)', function (obj) {
+            const data = obj.data;
+            //console.log(obj)
+            if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if (obj.event === 'edit') {
+                layer.prompt({
+                    formType: 2
+                    , value: data.url
+                }, function (value, index) {
+                    obj.update({
+                        email: value
+                    });
+                    layer.close(index);
+                });
+            } else if (obj.event === 'copy') {
+                let flag;
+                if (data.url.includes("read")) {
+                    flag = copyText('http://t66y.com/' + data.url); //传递文本
+                } else {
+                    flag = copyText('http://t66y.com/htm_data/' + data.url); //传递文本
+                }
+                layer.msg(flag ? "复制成功！" : "复制失败！");
+            } else if (obj.event === 'reDownload') {
+                $.ajax({
+                    url: '/addAgainDownload', method: 'post', data: {
+                        'type': 1, 'id': data.id
+                    }, success: function (data) {
+                        if (200 === data.code || '200' === data.code) {
+                            obj.del();
+                            layer.msg(data.msg)
+                        } else {
+                            layer.msg(data.msg)
+                        }
+                    }
+                })
+            }
+        });
+    });
+
+    function copyText(text) {
+        const textarea = document.createElement("input");//创建input对象
+        const currentFocus = document.activeElement;//当前获得焦点的元素
+        document.body.appendChild(textarea);//添加元素
+        textarea.value = text;
+        textarea.focus();
+        if (textarea.setSelectionRange)
+            textarea.setSelectionRange(0, textarea.value.length);//获取光标起始位置到结束位置
+        else
+            textarea.select();
+        let value;
+        try {
+            value = document.execCommand("copy");//执行复制
+        } catch (eo) {
+            value = false;
+        }
+        document.body.removeChild(textarea);//删除元素
+        currentFocus.focus();
+        return value;
+    }
+</script>
+
+</body>
+</html>

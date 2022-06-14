@@ -6,6 +6,7 @@ from flask import (
     render_template,
     request, jsonify,
 )
+from sqlalchemy import func
 
 from config.decorators import login_required
 from config.exts import db
@@ -63,11 +64,12 @@ def spu():
 @bp.route('/success', methods=['GET', 'POST'])
 @login_required
 def success():
+    last_date = '不详'
     all_size = 0
     img_size = 0
     phones = 0
     pcs = 0
-    data = SuccessPageUrlModel.query.all()
+    data = SuccessPageUrlModel.query.order_by(db.text('-create_date')).all()
     for i in data:
         if i.all_size:
             all_size += float(i.all_size)
@@ -77,11 +79,9 @@ def success():
             phones += i.phoneImg
         if i.pcImg:
             pcs += i.pcImg
-    last_time = ConfigModel.query.filter_by(id=1).first()
-    if last_time:
-        last_date = last_time.last_date
-    else:
-        last_date = '不详'
+    if data:
+        if data[0].create_date:
+            last_date = str(data[0].create_date)
     dic = {'all_size': round(all_size, 2), 'img_size': img_size, 'phones': phones, 'pcs': pcs, 'last_time': last_date}
 
     return render_template('success.html', data=dic)
@@ -97,6 +97,12 @@ def fail():
 @login_required
 def failImg():
     return render_template('failImg.html')
+
+
+@bp.route('/quality4list', methods=['GET', 'POST'])
+@login_required
+def quality4list():
+    return render_template('quality4list.html')
 
 
 @bp.route('/reDownload', methods=['GET', 'POST'])
@@ -224,3 +230,90 @@ def addAgainDownload():
             return jsonify({'code': 200, 'msg': '添加到重新下载列表成功！'})
     except Exception as e:
         return jsonify({'code': 400, 'msg': f'添加失败:{str(e)}'})
+
+
+@bp.route('/dayData', methods=['GET', 'POST'])
+@login_required
+def dayData():
+    page = int(request.args.get('page'))
+    limit = int(request.args.get('limit'))
+    start = (page - 1) * limit
+    end = start + limit
+    data = SuccessPageUrlModel.query.order_by(db.text('-create_date')).all()
+    data_list = []
+    DQ = ['垃圾', '劣质', '一般', '清晰', '标清', '高清',
+          '超高', '顶级', '巨顶', '动图']
+    dataDit = {}
+    dataDit_quality = {}
+    dataDit = {}
+    dataDit = {}
+    dataDit = {}
+    dataDit = {}
+    dataDit = {}
+    dataDit = {}
+    for i in data[start:end]:
+        date_ = str(i.create_date)[:10]
+        if date_ in dataDit:
+            dataDit[date_] += 1
+        else:
+            dataDit[date_] = 1
+
+        if i.quality in range(0, 9):
+            quality = DQ[i.quality]
+        else:
+            quality = '暂无评价'
+        if i.url:
+            url = i.url
+            if 'data/' in i.url:
+                url = url.split('data/')[1]
+        else:
+            url = '暂无数据'
+        if i.publish_date:
+            publish_date = i.publish_date
+            if 'Posted' in publish_date:
+                publish_date = publish_date[7:]
+        else:
+            publish_date = '暂无数据'
+
+        dit = {'id': i.id if i.id else '暂无信息',
+               'url': url,
+               'create_date': str(i.create_date) if i.create_date else '暂无信息',
+               'title': i.title if i.title else '暂无信息',
+               'quality': quality,
+               'all_size': i.all_size if i.all_size else '暂无信息',
+               'avg_size': i.avg_size if i.avg_size else '暂无信息',
+               'pcImg': i.pcImg if i.pcImg == 0 or i.pcImg else '暂无信息',
+               'dir': i.dir if i.dir else '暂无信息',
+               'publish_date': publish_date,
+               'phoneImg': i.phoneImg if i.phoneImg == 0 or i.phoneImg else '暂无信息',
+               'img_size': i.img_size if i.img_size else '暂无信息'}
+        data_list.append(dit)
+    dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data), 'data': data_list}
+    return json.dumps(dic, ensure_ascii=False)
+
+
+@bp.route('/list4quality', methods=['GET', 'POST'])
+@login_required
+def list4quality():
+    data_list = []
+    qualityNum = db.session.query(SuccessPageUrlModel.quality, func.count(SuccessPageUrlModel.id)).group_by(SuccessPageUrlModel.quality).all()
+    quality_size = db.session.query(SuccessPageUrlModel.quality, func.sum(SuccessPageUrlModel.img_size)).group_by(SuccessPageUrlModel.quality).all()
+    qualityImg = db.session.query(SuccessPageUrlModel.quality, func.sum(SuccessPageUrlModel.pcImg)).group_by(SuccessPageUrlModel.quality).all()
+    qualityPhoneImg = db.session.query(SuccessPageUrlModel.quality, func.sum(SuccessPageUrlModel.phoneImg)).group_by(SuccessPageUrlModel.quality).all()
+    ditNone = {'title': -1, 'qualityNum': 0, 'qualityAll_size': 0, 'qualityPcImg': 0, 'qualityPhoneImg': 0}
+    for i in range(0, 10):
+        locals()['dit' + str(i)] = {'title': i, 'qualityNum': 0, 'qualityAll_size': 0, 'qualityPcImg': 0, 'qualityPhoneImg': 0}
+    for i in qualityNum:
+        locals()['dit' + str(i[0])]['qualityNum'] = str(i[1])
+    for i in quality_size:
+        locals()['dit' + str(i[0])]['qualityAll_size'] = str(i[1])
+    for i in qualityImg:
+        locals()['dit' + str(i[0])]['qualityPcImg'] = str(i[1])
+    for i in qualityPhoneImg:
+        locals()['dit' + str(i[0])]['qualityPhoneImg'] = str(i[1])
+    for i in range(0, 10):
+        data_list.append(locals()['dit'+str(i)])
+    dic = {'code': 0, 'msg': 'SUCCESS', 'count': 11, 'data': data_list}
+    return dic
+
+

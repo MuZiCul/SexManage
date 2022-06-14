@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <title>质量评价表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script type="text/javascript" src="{{ url_for('static',filename='js/jquery-1.9.1.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='layui/css/layui.css') }}"
+          tppabs="http://res.layui.com/layui/dist/css/layui.css?t=1632428048355" media="all">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+
+<table class="layui-hide" id="test" lay-filter="test"></table>
+
+<script src="{{ url_for('static',filename='layui/layui.js') }}"
+        tppabs="http://res.layui.com/layui/dist/layui.js?t=1632428048355"></script>
+
+<script type="text/javascript">
+    layui.use('table', function () {
+        const table = layui.table;
+        table.render({
+            elem: '#test'
+            , url: '/list4quality'
+            , toolbar: '#toolbarDemo'
+            , title: '质量评价表'
+            , totalRow: true
+            , cellMinWidth: 80
+            , cols: [[{
+                    field: 'title', title: '质量名称', align: 'center', totalRowText: '合计', templet: function (res) {
+                        switch (res.title) {
+                            case 0:
+                                return '垃圾质量'
+                            case 1:
+                                return '劣质质量'
+                            case 2:
+                                return '一般质量'
+                            case 3:
+                                return '清晰质量'
+                            case 4:
+                                return '标清质量'
+                            case 5:
+                                return '高清质量'
+                            case 6:
+                                return '超高质量'
+                            case 7:
+                                return '顶级质量'
+                            case 8:
+                                return '巨顶质量'
+                            case 9:
+                                return '含有动图'
+                            default:
+                                return '未知信息'
+                        }
+                    }
+                }
+                , {field: 'qualityNum', title: '总链接数', align: 'center', totalRow: true, sort: true,templet: function (res) {
+                    return res.qualityNum + '个'
+                    }}
+                , {field: 'qualityAll_size', title: '全部壁纸', align: 'center', totalRow: true, sort: true,templet: function (res) {
+                    return res.qualityAll_size + 'P'
+                    }}
+                , {field: 'qualityPcImg', title: '电脑壁纸', align: 'center', totalRow: true, sort: true,templet: function (res) {
+                    return res.qualityPcImg + 'P'
+                    }}
+                , {field: 'qualityPhoneImg', title: '手机壁纸', align: 'center', totalRow: true, sort: true,templet: function (res) {
+                    return res.qualityPhoneImg + 'P'
+                    }}
+            ]]
+            , page: true
+        });
+    });
+</script>
+
+</body>
+</html>

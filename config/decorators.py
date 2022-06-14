@@ -1,4 +1,4 @@
-from flask import g, redirect, url_for, session, render_template
+from flask import g, redirect, url_for, session, render_template, flash
 from functools import wraps
 
 
@@ -11,6 +11,7 @@ def login_required(fun):
                 return fun(*args, **kwargs)
             except Exception as e:
                 print('前端session未清空：', str(e))
+                flash(str(e))
                 session.clear()
                 return render_template('login.html')
         else:
