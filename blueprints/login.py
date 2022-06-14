@@ -11,6 +11,7 @@ from flask import (
 )
 from werkzeug.security import check_password_hash
 
+from blueprints.forms import LoginForm
 from config.decorators import login_required
 from config.models import UserModel
 from utils.Aescrypt import Aescrypt
@@ -28,10 +29,10 @@ def login():
     if hasattr(g, 'user'):
         return redirect(url_for('index.index'))
     if request.method == 'POST':
-        form = checkLoginForm(request.form.to_dict())
-        if form['code'] == 200:
-            account = form['account']
-            password = form['password']
+        form = LoginForm(request.form)
+        if form.validate():
+            account = form.account.data
+            password = form.password.data
             AescryptOb = Aescrypt()
             AES_password = AescryptOb.encryption(password)
             user_email = UserModel.query.filter_by(email=account).first()
@@ -68,13 +69,3 @@ def logoff():
     session.clear()
     flash("账号已退出，3秒后跳转到首页！")
     return render_template('login.html')
-
-
-def checkLoginForm(form):
-    account = form['account']
-    password = form['password']
-    if not account or not password:
-        return {'code': 400, 'msg': '账号或密码不能为空'}
-    if len(account) < 5 or len(account) > 20 or len(password) < 5 or len(password) > 20:
-        return {'code': 400, 'msg': '账号/密码长度应该在5-20位之间'}
-    return {'code': 200, 'account': account, 'password': password}
