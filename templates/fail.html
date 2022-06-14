@@ -25,6 +25,7 @@
     </div>
 </script>
 <script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="copy">复制</a>
     <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="reDownload">重下</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
@@ -49,7 +50,7 @@
                 , {field: 'id', title: 'ID', fixed: 'left', sort: true, width: 80, totalRowText: '合计'}
                 , {
                     field: 'title', title: '标题', align: 'center', templet: function (res) {
-                        return '<a href=http://t66y.com/htm_data/' + res.url + '><em>' + res.title + '</em></a>'
+                        return '<a href=http://t66y.com/' + res.url + '><em>' + res.title + '</em></a>'
                     }
                 }
                 , {
@@ -81,7 +82,7 @@
                     layer.msg(checkStatus.isAll ? '全选' : '未全选')
                     break;
                 case 'isTips':
-                    layer.msg('Tips：点击标题打开可原网页哦！')
+                    layer.msg('Tips：点击标题可打开原网页哦！')
                     break;
                 case 'isClear':
                     layer.msg('开始清理失败列表！')
@@ -112,12 +113,12 @@
                     , value: data.url
                 }, function (value, index) {
                     obj.update({
-                        email: value
+                        url: value
                     });
                     layer.close(index);
                 });
             } else if (obj.event === 'copy') {
-                const flag = copyText('http://t66y.com/htm_data/' + data.url); //传递文本
+                const flag = copyText('http://t66y.com/' + data.url); //传递文本
                 layer.msg(flag ? "复制成功！" : "复制失败！");
             } else if (obj.event === 'reDownload') {
                 $.ajax({

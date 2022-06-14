@@ -50,6 +50,8 @@ class DownloadAgainPageUrlModel(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     url = db.Column(db.String(200), default='')
     title = db.Column(db.String(200), default='')
+    state = db.Column(db.Integer, default=0)
+    count = db.Column(db.Integer, default=0)
     create_date = db.Column(db.DateTime, default=datetime.now)
 
 

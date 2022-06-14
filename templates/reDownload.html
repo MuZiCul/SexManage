@@ -44,7 +44,7 @@
                 , {field: 'id', title: 'ID', fixed: 'left', sort: true, width: 80, totalRowText: '合计'}
                 , {
                     field: 'title', title: '标题', align: 'center', templet: function (res) {
-                        return '<a href=http://t66y.com/htm_data/' + res.url + '><em>' + res.title + '</em></a>'
+                        return '<a href=http://t66y.com/' + res.url + '><em>' + res.title + '</em></a>'
                     }
                 }
                 , {
@@ -52,6 +52,14 @@
                         return '<em>' + res.url + '</em>'
                     }
                 }
+                , {field: 'state', title: '重下状态', align: 'center', sort: true, templet: function (res) {
+                    if (res.state){
+                        return '已完成'
+                    }else {
+                        return '未开始'
+                    }
+                    }}
+                , {field: 'count', title: '尝试次数', align: 'center', sort: true}
                 , {field: 'create_date', title: '创建时间', align: 'center', sort: true}
                 , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 120}
             ]]
@@ -62,7 +70,7 @@
         table.on('toolbar(test)', function (obj) {
             switch (obj.event) {
                 case 'isTips':
-                    layer.msg('Tips：点击标题打开可原网页哦！')
+                    layer.msg('Tips：点击标题可打开原网页哦！')
                     break;
             }
         });
@@ -76,7 +84,7 @@
                     layer.close(index);
                 });
             } else if (obj.event === 'copy') {
-                const flag = copyText(data.url); //传递文本
+                const flag = copyText('http://t66y.com/'+data.url); //传递文本
                 layer.msg(flag ? "复制成功！" : "复制失败！");
             }
         });

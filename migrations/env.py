@@ -75,6 +75,8 @@ def run_migrations_online():
 
     with connectable.connect() as connection:
         context.configure(
+            compare_type=True,
+            compare_server_default=True,  # 默认值
             connection=connection,
             target_metadata=target_metadata,
             process_revision_directives=process_revision_directives,

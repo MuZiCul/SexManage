@@ -115,14 +115,8 @@ def fpu():
     data = FailPageUrlModel.query.order_by(db.text('-create_date')).all()
     data_list = []
     for i in data[start:end]:
-        if i.url:
-            url = i.url
-            if 'data/' in i.url:
-                url = url.split('data/')[1]
-        else:
-            url = '暂无数据'
         dit = {'id': i.id if i.id else '暂无信息',
-               'url': url,
+               'url': i.url,
                'publish_date': i.publish_date if i.publish_date else '暂无数据',
                'create_date': str(i.create_date) if i.create_date else '暂无信息',
                'title': i.title if i.title else '暂无信息'}
@@ -141,10 +135,12 @@ def rpu():
     data = DownloadAgainPageUrlModel.query.order_by(db.text('-create_date')).all()
     data_list = []
     for i in data[start:end]:
-        dit = {'id': i.id if i.id else '暂无信息',
-               'url': i.url if i.url else '暂无信息',
+        dit = {'id': i.id if i.id is not None else '暂无信息',
+               'url': i.url if i.url is not None else '暂无信息',
                'create_date': str(i.create_date) if i.create_date else '暂无信息',
-               'title': i.title if i.title else '暂无信息'}
+               'state': i.state if i.state is not None else '暂无信息',
+               'count': i.count if i.count is not None else '暂无信息',
+               'title': i.title if len(i.title) else '暂无信息'}
         data_list.append(dit)
     dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data), 'data': data_list}
     return dic
