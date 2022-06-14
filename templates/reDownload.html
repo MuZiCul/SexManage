@@ -17,6 +17,7 @@
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
+                <button id="clear" class="layui-btn layui-btn-sm" lay-event="isClear">清理列表</button>
         <button class="layui-btn layui-btn-sm" lay-event="isTips">Tips：点击标题打开原网页</button>
     </div>
 </script>
@@ -71,6 +72,18 @@
             switch (obj.event) {
                 case 'isTips':
                     layer.msg('Tips：点击标题可打开原网页哦！')
+                    break;
+                case 'isClear':
+                    layer.msg('开始清理失败列表！')
+                    $("#clear").attr("disabled", true);
+                    $.ajax({
+                        url: '/clearReDownPage', method: 'post', success: function (data) {
+                            if (200 === data.code || '200' === data.code) {
+                                layer.msg(data.msg)
+                                $("#clear").attr("disabled", false);
+                            }
+                        }
+                    })
                     break;
             }
         });

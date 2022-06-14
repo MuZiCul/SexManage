@@ -169,9 +169,30 @@ def clearFailPage():
         SuccessDataUrlList.append(i.url)
     for i in failData:
         if i.url in SuccessDataUrlList:
-            failPageUrl = FailPageUrlModel.query.filter_by(url=i.url).all()
+            failPageUrl = FailPageUrlModel.query.filter(FailPageUrlModel.url.like("%" + i.url + "%")).all()
             for j in failPageUrl:
                 pageUrl = FailPageUrlModel.query.filter_by(id=j.id).first()
+                db.session.delete(pageUrl)
+                db.session.commit()
+    end = datetime.now()
+    time = (end - start).seconds
+    return jsonify({'code': 200, 'msg': '清理完成，本次用时 {:.0f}分 {:.0f}秒'.format(time // 60, time % 60)})
+
+
+@bp.route('/clearReDownPage', methods=['GET', 'POST'])
+@login_required
+def clearReDownPage():
+    start = datetime.now()
+    failData = DownloadAgainPageUrlModel.query.all()
+    SuccessData = SuccessPageUrlModel.query.all()
+    SuccessDataUrlList = []
+    for i in SuccessData:
+        SuccessDataUrlList.append(i.url)
+    for i in failData:
+        if i.url in SuccessDataUrlList:
+            failPageUrl = DownloadAgainPageUrlModel.query.filter(DownloadAgainPageUrlModel.url.like("%" + i.url + "%")).all()
+            for j in failPageUrl:
+                pageUrl = DownloadAgainPageUrlModel.query.filter_by(id=j.id).first()
                 db.session.delete(pageUrl)
                 db.session.commit()
     end = datetime.now()
