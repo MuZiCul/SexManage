@@ -71,7 +71,16 @@
                     sort: true,
                     totalRow: true,
                     templet: function (res) {
-                        return res.all_size + 'MB'
+                                                let num = Number(res.all_size);
+                        if (num<1024){
+                            num = num.toFixed(2);
+                            return num + 'MB'
+                        }
+                        else if (1024<num<10240){
+                            num = num/1024
+                            num = num.toFixed(2);
+                            return num + 'GB'
+                        }
                     }
                 }
                 , {
@@ -81,7 +90,7 @@
                     sort: true,
                     totalRow: true,
                     templet: function (res) {
-                        return res.avg_size + 'MB'
+                        return Number(res.avg_size).toFixed(2) + 'MB'
                     }
                 }
                 , {
@@ -91,7 +100,7 @@
                     sort: true,
                     totalRow: true,
                     templet: function (res) {
-                        return res.img_size + 'P'
+                        return Number(res.img_size).toFixed(0) + 'P'
                     }
                 }
                 , {
@@ -101,7 +110,7 @@
                     sort: true,
                     totalRow: true,
                     templet: function (res) {
-                        return res.pcImg + 'P'
+                        return Number(res.pcImg).toFixed(0) + 'P'
                     }
                 }
                 , {
@@ -111,7 +120,7 @@
                     sort: true,
                     totalRow: true,
                     templet: function (res) {
-                        return res.phoneImg + 'P'
+                        return Number(res.phoneImg).toFixed(0) + 'P'
                     }
                 }
                 , {field: 'publish_date', title: '发布时间', align: 'center', sort: true}

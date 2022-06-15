@@ -4,6 +4,7 @@ from flask import (
     Blueprint,
     request, render_template, g, session
 )
+from sqlalchemy import func
 
 from config.decorators import login_required
 from config.exts import db
@@ -77,3 +78,33 @@ def get_quality():
         data_list.append(dit)
     dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data), 'data': data_list}
     return json.dumps(dic, ensure_ascii=False)
+
+
+@bp.route('/list4quality', methods=['GET', 'POST'])
+@login_required
+def list4quality():
+    data_list = []
+    qualityNum = db.session.query(SuccessPageUrlModel.quality, func.count(SuccessPageUrlModel.id)).group_by(
+        SuccessPageUrlModel.quality).all()
+    quality_size = db.session.query(SuccessPageUrlModel.quality, func.sum(SuccessPageUrlModel.img_size)).group_by(
+        SuccessPageUrlModel.quality).all()
+    qualityImg = db.session.query(SuccessPageUrlModel.quality, func.sum(SuccessPageUrlModel.pcImg)).group_by(
+        SuccessPageUrlModel.quality).all()
+    qualityPhoneImg = db.session.query(SuccessPageUrlModel.quality, func.sum(SuccessPageUrlModel.phoneImg)).group_by(
+        SuccessPageUrlModel.quality).all()
+    ditNone = {'title': -1, 'qualityNum': 0, 'qualityAll_size': 0, 'qualityPcImg': 0, 'qualityPhoneImg': 0}
+    for i in range(0, 10):
+        locals()['dit' + str(i)] = {'title': i, 'qualityNum': 0, 'qualityAll_size': 0, 'qualityPcImg': 0,
+                                    'qualityPhoneImg': 0}
+    for i in qualityNum:
+        locals()['dit' + str(i[0])]['qualityNum'] = str(i[1])
+    for i in quality_size:
+        locals()['dit' + str(i[0])]['qualityAll_size'] = str(i[1])
+    for i in qualityImg:
+        locals()['dit' + str(i[0])]['qualityPcImg'] = str(i[1])
+    for i in qualityPhoneImg:
+        locals()['dit' + str(i[0])]['qualityPhoneImg'] = str(i[1])
+    for i in range(0, 10):
+        data_list.append(locals()['dit' + str(i)])
+    dic = {'code': 0, 'msg': 'SUCCESS', 'count': 11, 'data': data_list}
+    return dic

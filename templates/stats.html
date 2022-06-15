@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <title>质量评价表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script type="text/javascript" src="{{ url_for('static',filename='js/jquery-1.9.1.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='layui/css/layui.css') }}"
+          tppabs="http://res.layui.com/layui/dist/css/layui.css?t=1632428048355" media="all">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+
+<table class="layui-hide" id="test" lay-filter="test"></table>
+
+<script src="{{ url_for('static',filename='layui/layui.js') }}"
+        tppabs="http://res.layui.com/layui/dist/layui.js?t=1632428048355"></script>
+
+<script type="text/javascript">
+    layui.use('table', function () {
+        const table = layui.table;
+        table.render({
+            elem: '#test'
+            , url: '/statsData'
+            , toolbar: '#toolbarDemo'
+            , title: '质量评价表'
+            , totalRow: true
+            , cellMinWidth: 80
+            , cols: [[{
+                field: 'title', title: '下载时间', align: 'center', totalRowText: '合计',sort: true,
+            }
+                , {
+                    field: 'all_size',
+                    title: '下载大小',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        let num = Number(res.all_size);
+                        if (num < 1024) {
+                            num = num.toFixed(2);
+                            return num + 'MB'
+                        } else if (1024 < num < 10240) {
+                            num = num / 1024
+                            num = num.toFixed(2);
+                            return num + 'GB'
+                        }
+                    }
+                }
+                , {
+                    field: 'img_nums',
+                    title: '壁纸总数',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        return Number(res.img_nums).toFixed(0) + ''
+                    }
+                }
+                , {
+                    field: 'pcImg',
+                    title: '电脑壁纸',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        return Number(res.pcImg).toFixed(0) + 'P'
+                    }
+                }
+                , {
+                    field: 'phoneImg',
+                    title: '手机壁纸',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        return Number(res.phoneImg).toFixed(0) + 'P'
+                    }
+                }
+                , {
+                    field: 'quality0',
+                    title: '垃圾',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        return Number(res.quality0).toFixed(0)
+                    }
+                }
+                , {
+                    field: 'quality1',
+                    title: '劣质',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        return Number(res.quality1).toFixed(0)
+                    }
+                }
+                , {
+                    field: 'quality2',
+                    title: '一般',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        return Number(res.quality2).toFixed(0)
+                    }
+                }
+                , {
+                    field: 'quality3',
+                    title: '清晰',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        return Number(res.quality3).toFixed(0)
+                    }
+                }
+                , {
+                    field: 'quality4',
+                    title: '标清',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        return Number(res.quality4).toFixed(0)
+                    }
+                }
+                , {
+                    field: 'quality5',
+                    title: '高清',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        return Number(res.quality5).toFixed(0)
+                    }
+                }
+                , {
+                    field: 'quality6',
+                    title: '超高',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        return Number(res.quality6).toFixed(0)
+                    }
+                }
+                , {
+                    field: 'quality7',
+                    title: '顶级',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        return Number(res.quality7).toFixed(0)
+                    }
+                }
+                , {
+                    field: 'quality8',
+                    title: '巨顶',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        return Number(res.quality8).toFixed(0)
+                    }
+                }
+                , {
+                    field: 'quality9',
+                    title: '动图',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        return Number(res.quality9).toFixed(0)
+                    }
+                }
+                , {
+                    field: 'quality_1',
+                    title: '未知',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        return Number(res.quality_1).toFixed(0)
+                    }
+                }
+            ]]
+            , page: true
+        });
+    });
+</script>
+
+</body>
+</html>

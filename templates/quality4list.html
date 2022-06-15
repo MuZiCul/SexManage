@@ -57,16 +57,16 @@
                     }
                 }
                 , {field: 'qualityNum', title: '总链接数', align: 'center', totalRow: true, sort: true,templet: function (res) {
-                    return res.qualityNum + '个'
+                    return Number(res.qualityNum).toFixed(0) + '个'
                     }}
                 , {field: 'qualityAll_size', title: '全部壁纸', align: 'center', totalRow: true, sort: true,templet: function (res) {
-                    return res.qualityAll_size + 'P'
+                    return Number(res.qualityAll_size).toFixed(0) + 'P'
                     }}
                 , {field: 'qualityPcImg', title: '电脑壁纸', align: 'center', totalRow: true, sort: true,templet: function (res) {
-                    return res.qualityPcImg + 'P'
+                    return Number(res.qualityPcImg).toFixed(0) + 'P'
                     }}
                 , {field: 'qualityPhoneImg', title: '手机壁纸', align: 'center', totalRow: true, sort: true,templet: function (res) {
-                    return res.qualityPhoneImg + 'P'
+                    return Number(res.qualityPhoneImg).toFixed(0) + 'P'
                     }}
             ]]
             , page: true

@@ -10,7 +10,7 @@ def login_required(fun):
                 print(g.user.id)
                 return fun(*args, **kwargs)
             except Exception as e:
-                print('前端session未清空：', str(e))
+                print('！！！！！！！！！出现异常：', str(e))
                 flash(str(e))
                 session.clear()
                 return render_template('login.html')
