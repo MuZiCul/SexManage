@@ -59,10 +59,23 @@
                         }
                     }
                 }
-                , {
-                    field: 'quality', title: '质量评价', align: 'center', sort: true, templet: function (res) {
-                        return res.quality + '质量'
+                                , {
+                    field: 'kind', title: '分类', align: 'center', sort: true, templet: function (res) {
+                        switch (res.kind) {
+                            case 0:
+                                return '亚洲'
+                            case 1:
+                                return '写真'
+                            case 2:
+                                return '自拍'
+                            default:
+                                return res.kind
+
+                        }
                     }
+                }
+                , {
+                    field: 'quality', title: '质量', align: 'center', sort: true
                 }
                 , {
                     field: 'all_size',
@@ -158,8 +171,19 @@
             //console.log(obj)
             if (obj.event === 'del') {
                 layer.confirm('真的删除行么', function (index) {
-                    obj.del();
-                    layer.close(index);
+                    $.ajax({
+                        url: '/delData', method: 'post', data: {
+                            'type': 1, 'id': data.id
+                        }, success: function (data) {
+                            if (200 === data.code || '200' === data.code) {
+                                obj.del();
+                                layer.close(index);
+                            } else {
+                                layer.close(index);
+                                layer.msg('删除失败')
+                            }
+                        }
+                    })
                 });
             } else if (obj.event === 'edit') {
                 layer.prompt({

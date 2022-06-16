@@ -19,6 +19,7 @@ class SuccessPageUrlModel(db.Model):
     url = db.Column(db.String(200), default='')
     title = db.Column(db.String(200), default='')
     quality = db.Column(db.Integer, default=0)
+    kind = db.Column(db.Integer, default=0)
     all_size = db.Column(db.String(50), default='')
     avg_size = db.Column(db.String(50), default='')
     img_size = db.Column(db.Integer, default=0)

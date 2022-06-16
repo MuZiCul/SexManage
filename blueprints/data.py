@@ -1,4 +1,5 @@
 import json
+import re
 from datetime import datetime
 
 from flask import (
@@ -41,12 +42,30 @@ def spu():
                 publish_date = publish_date[7:]
         else:
             publish_date = '暂无数据'
+        kind = '自拍'
+        if i.title:
+            title = str(i.title).replace(' ', '')
+            if '洲]' in title:
+                title = title[4:]
+                kind = '亚洲'
+            elif '真]' in title:
+                title = title[4:]
+                kind = '写真'
+            pnm = re.findall('\[(.*?)]', title, re.S)
+            if len(pnm) > 1:
+                pnm.reverse()
+            if pnm:
+                if 'P]' in title:
+                    title = title.replace(f'[{pnm[0]}]', '')
+        else:
+            title = '暂无信息'
 
         dit = {'id': i.id if i.id else '暂无信息',
                'url': url,
                'create_date': str(i.create_date) if i.create_date else '暂无信息',
-               'title': i.title if i.title else '暂无信息',
+               'title': title,
                'quality': quality,
+               'kind': i.kind if i.kind else kind,
                'all_size': i.all_size if i.all_size else '暂无信息',
                'avg_size': i.avg_size if i.avg_size else '暂无信息',
                'pcImg': i.pcImg if i.pcImg == 0 or i.pcImg else '暂无信息',
@@ -169,6 +188,19 @@ def fiu():
         data_list.append(dit)
     dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data), 'data': data_list}
     return dic
+
+
+@bp.route('/delData', methods=['GET', 'POST'])
+@login_required
+def delData():
+    kind = request.form.get('type')
+    id = request.form.get('id')
+    if kind == 1 or kind == '1':
+        spu = SuccessPageUrlModel.query.filter_by(id=id).first()
+        db.session.delete(spu)
+        db.session.commit()
+        return jsonify({'code': 200})
+    return jsonify({'code': 400})
 
 
 @bp.route('/clearFailPage', methods=['GET', 'POST'])
