@@ -17,9 +17,9 @@
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-{#        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>#}
-{#        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>#}
-{#        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>#}
+        {#        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>#}
+        {#        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>#}
+        {#        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>#}
         <button class="layui-btn layui-btn-sm" lay-event="isTips">Tips：点击标题打开原网页</button>
         {% if data %}
             <button class="layui-btn layui-btn-sm">
@@ -59,7 +59,7 @@
                         }
                     }
                 }
-                                , {
+                , {
                     field: 'kind', title: '分类', align: 'center', sort: true, templet: function (res) {
                         switch (res.kind) {
                             case 0:
@@ -84,12 +84,12 @@
                     sort: true,
                     totalRow: true,
                     templet: function (res) {
-                                                let num = Number(res.all_size);
-                        if (num<1024){
+                        let num = Number(res.all_size);
+                        if (num < 1024) {
                             num = num.toFixed(2);
                             return num + 'MB'
-                        }else if (num<10240){
-                            num = num/1024
+                        } else if (num < 10240) {
+                            num = num / 1024
                             num = num.toFixed(2);
                             return num + 'GB'
                         }
