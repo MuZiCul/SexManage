@@ -80,7 +80,16 @@ def success():
     if data:
         if data[0].create_date:
             last_date = str(data[0].create_date)
-    dic = {'all_size': round(all_size, 2), 'img_size': img_size, 'phones': phones, 'pcs': pcs, 'last_time': last_date}
+
+    if all_size < 1024:
+        all_size = str(round(all_size, 2)) + 'MB'
+    elif all_size < 10240:
+        all_size = str(round(all_size/1024, 2)) + 'GB'
+    elif all_size < 102400:
+        all_size = str(round(all_size/10240, 2)) + 'TB'
+    elif all_size < 1024000:
+        all_size = str(round(all_size/102400, 2)) + 'pB'
+    dic = {'all_size': all_size, 'img_size': img_size, 'phones': phones, 'pcs': pcs, 'last_time': last_date}
 
     return render_template('success.html', data=dic)
 
