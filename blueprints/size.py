@@ -45,21 +45,25 @@ def stats4hour():
 @bp.route('/statsData', methods=['GET', 'POST'])
 @login_required
 def statsData():
+    try:
+        page = int(request.args.get('page'))
+        limit = int(request.args.get('limit'))
+    except Exception as e:
+        page = 1
+        limit = 50
     if 'day' == session.get('stats'):
-        return dayData(request.args)
+        return dayData(page, limit)
     elif 'month' == session.get('stats'):
-        return monthData(request.args)
+        return monthData(page, limit)
     elif 'year' == session.get('stats'):
-        return yearData(request.args)
+        return yearData(page, limit)
     elif 'hour' == session.get('stats'):
-        return hourData(request.args)
+        return hourData(page, limit)
     else:
-        return dayData(request.args)
+        return dayData(page, limit)
 
 
-def hourData(args):
-    page = int(args.get('page'))
-    limit = int(args.get('limit'))
+def hourData(page, limit):
     start = (page - 1) * limit
     end = start + limit
     now_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
@@ -222,13 +226,11 @@ def hourData(args):
         except Exception as e:
             continue
     data_list.reverse()
-    dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data_list), 'data': data_list[start:end]}
+    dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data_list), 'data': data_list[start:end], 'type': 3}
     return json.dumps(dic, ensure_ascii=False)
 
 
-def dayData(args):
-    page = int(args.get('page'))
-    limit = int(args.get('limit'))
+def dayData(page, limit):
     start = (page - 1) * limit
     end = start + limit
     now_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
@@ -309,13 +311,11 @@ def dayData(args):
         except Exception as e:
             continue
     data_list.reverse()
-    dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data_list), 'data': data_list[start:end]}
+    dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data_list), 'data': data_list[start:end], 'type': 2}
     return json.dumps(dic, ensure_ascii=False)
 
 
-def monthData(args):
-    page = int(args.get('page'))
-    limit = int(args.get('limit'))
+def monthData(page, limit):
     start = (page - 1) * limit
     end = start + limit
     now_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
@@ -389,13 +389,11 @@ def monthData(args):
         except Exception as e:
             continue
     data_list.reverse()
-    dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data_list), 'data': data_list[start:end]}
+    dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data_list), 'data': data_list[start:end], 'type': 2}
     return json.dumps(dic, ensure_ascii=False)
 
 
-def yearData(args):
-    page = int(args.get('page'))
-    limit = int(args.get('limit'))
+def yearData(page, limit):
     start = (page - 1) * limit
     end = start + limit
     now_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
@@ -464,5 +462,5 @@ def yearData(args):
             data_list.append(locals()['dit_' + str(i)])
         except Exception as e:
             continue
-    dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data_list), 'data': data_list[start:end]}
+    dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data_list), 'data': data_list[start:end], 'type': 4}
     return json.dumps(dic, ensure_ascii=False)

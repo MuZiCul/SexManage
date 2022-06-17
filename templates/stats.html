@@ -7,13 +7,100 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <script type="text/javascript" src="{{ url_for('static',filename='js/jquery-1.9.1.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/echarts.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static',filename='layui/css/layui.css') }}"
           tppabs="http://res.layui.com/layui/dist/css/layui.css?t=1632428048355" media="all">
-    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
 </head>
 <body>
+    <table class="layui-hide" id="test" lay-filter="test"></table>
+    <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+    <div id="main" style="width: 100%;min-height:600px;"></div>
+<script type="text/javascript">
+    var chartDom = document.getElementById('main');
+    var myChart = echarts.init(chartDom);
+    var option;
+    $.ajax({
+        url: '/statsData', method: 'post', success: function (data) {
+            const jsonObject = jQuery.parseJSON(data);
+            const type = Number(jsonObject.type)
+            const data_list = (jsonObject.data).reverse()
+            let xAxis_data = []
+            let ALL_data = []
+            let Img_data = []
+            let pc_data = []
+            let phone_data = []
+            for (let i = 0; i < data_list.length; i++) {
+                const title = data_list[i].title
+                const all_size = Number(data_list[i].all_size).toFixed(2)
+                const img_size = data_list[i].img_nums
+                const pc = data_list[i].pcImg
+                const phone = data_list[i].phoneImg
+                xAxis_data.push(title.substring(title.length - type))
+                ALL_data.push(all_size)
+                Img_data.push(img_size)
+                pc_data.push(pc)
+                phone_data.push(phone)
+            }
 
-<table class="layui-hide" id="test" lay-filter="test"></table>
+            option = {
+                title: {
+                    text: ''
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: ['Size', 'ALL', 'PC', 'Phone']
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: xAxis_data
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name: 'Size',
+                        type: 'line',
+                        data: ALL_data
+                    },
+                    {
+                        name: 'ALL',
+                        type: 'line',
+                        data: Img_data
+                    },
+                    {
+                        name: 'PC',
+                        type: 'line',
+                        data: pc_data
+                    },
+                    {
+                        name: 'Phone',
+                        type: 'line',
+                        data: phone_data
+                    },
+                ]
+            };
+            option && myChart.setOption(option);
+
+
+        }
+    })
+</script>
+
 
 <script src="{{ url_for('static',filename='layui/layui.js') }}"
         tppabs="http://res.layui.com/layui/dist/layui.js?t=1632428048355"></script>
@@ -29,7 +116,7 @@
             , totalRow: true
             , cellMinWidth: 80
             , cols: [[{
-                field: 'title', title: '下载时间', align: 'center', totalRowText: '合计',sort: true,
+                field: 'title', title: '下载时间', align: 'center', totalRowText: '合计', sort: true,
             }
                 , {
                     field: 'all_size',

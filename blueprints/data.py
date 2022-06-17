@@ -17,8 +17,12 @@ bp = Blueprint('data', __name__, url_prefix='/')
 @bp.route('/spu', methods=['GET', 'POST'])
 @login_required
 def spu():
-    page = int(request.args.get('page'))
-    limit = int(request.args.get('limit'))
+    try:
+        page = int(request.args.get('page'))
+        limit = int(request.args.get('limit'))
+    except Exception as e:
+        page = 1
+        limit = 50
     start = (page - 1) * limit
     end = start + limit
     data = SuccessPageUrlModel.query.order_by(db.text('-create_date')).all()

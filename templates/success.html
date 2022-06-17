@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <script type="text/javascript" src="{{ url_for('static',filename='js/jquery-1.9.1.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/echarts.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static',filename='layui/css/layui.css') }}"
           tppabs="http://res.layui.com/layui/dist/css/layui.css?t=1632428048355" media="all">
     <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
@@ -14,6 +15,214 @@
 <body>
 
 <table class="layui-hide" id="test" lay-filter="test"></table>
+<div id="main" style="width: 100%;min-height:600px;"></div>
+
+<script type="text/javascript">
+    var chartDom = document.getElementById('main');
+    var myChart = echarts.init(chartDom);
+    var option;
+    $.ajax({
+        url: '/spu', method: 'post', success: function (data) {
+            const jsonObject = jQuery.parseJSON(data);
+            const data_list = (jsonObject.data).reverse()
+            let xAxis_data = []
+            let all_size_data = []
+            let avg_size_data = []
+            let pcImg_data = []
+            let phoneImg_data = []
+            let img_size_data = []
+            for (let i = 0; i < data_list.length; i++) {
+                xAxis_data.push(data_list[i].id)
+                const all_size = Number(data_list[i].all_size).toFixed(2)
+                all_size_data.push(all_size)
+                const avg_size = Number(data_list[i].avg_size).toFixed(2)
+                avg_size_data.push(avg_size)
+                pcImg_data.push(data_list[i].pcImg)
+                phoneImg_data.push(data_list[i].phoneImg)
+                img_size_data.push(data_list[i].img_size)
+            }
+
+            option = {
+                color: ['#FF0087','#80FFA5', '#FFBF00' ,'#37A2FF','#00DDFF'],
+                title: {
+                    text: ''
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        label: {
+                            backgroundColor: '#6a7985'
+                        }
+                    }
+                },
+                legend: {
+                    data: ['尺寸', '平均', '总数', '手机', '电脑']
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: xAxis_data
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name: '尺寸',
+                        type: 'line',
+
+                        smooth: true,
+                        lineStyle: {
+                            width: 0
+                        },
+                        showSymbol: false,
+                        areaStyle: {
+                            opacity: 0.8,
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgb(255, 0, 135)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgb(135, 0, 157)'
+                                }
+                            ])
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: all_size_data
+                    },
+                    {
+                        name: '平均',
+                        type: 'line',
+                        smooth: true,
+                        lineStyle: {
+                            width: 0
+                        },
+                        showSymbol: false,
+                        areaStyle: {
+                            opacity: 0.8,
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgb(128, 255, 165)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgb(1, 191, 236)'
+                                }
+                            ])
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: avg_size_data
+                    },
+                    {
+                        name: '总数',
+                        type: 'line',
+                        smooth: true,
+                        lineStyle: {
+                            width: 0
+                        },
+                        showSymbol: false,
+                        label: {
+                            show: true,
+                            position: 'top'
+                        },
+                        areaStyle: {
+                            opacity: 0.8,
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgb(255, 191, 0)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgb(224, 62, 76)'
+                                }
+                            ])
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: img_size_data
+                    },
+                    {
+                        name: '手机',
+                        type: 'line',
+                        smooth: true,
+                        lineStyle: {
+                            width: 0
+                        },
+                        showSymbol: false,
+                        areaStyle: {
+                            opacity: 0.8,
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgb(55, 162, 255)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgb(116, 21, 219)'
+                                }
+                            ])
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: phoneImg_data
+                    },
+                    {
+                        name: '电脑',
+                        type: 'line',
+                        smooth: true,
+                        lineStyle: {
+                            width: 0
+                        },
+                        showSymbol: false,
+                        areaStyle: {
+                            opacity: 0.8,
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgb(0, 221, 255)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgb(77, 119, 255)'
+                                }
+                            ])
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: pcImg_data
+                    },
+                ]
+            };
+            option && myChart.setOption(option);
+
+
+        }
+    })
+</script>
+
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">

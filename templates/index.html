@@ -194,6 +194,9 @@
         tppabs="http://res.layui.com/layui/dist/layui.js?t=1632428048355"
         charset="utf-8"></script>
 <script type="text/javascript">
+     $(document).ready(function(){
+        getWindowInfo()
+    });
     //JS
     const getWindowInfo = () => {
         const bodyweight = document.getElementById("getbody").offsetHeight - document.getElementById("getfooter").offsetHeight - 30
