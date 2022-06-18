@@ -7,13 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.3/dist/echarts.min.js"></script>
+    <script src="https://lib.baomitu.com/echarts/5.3.3/echarts.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui/css/layui.css" media="all">
 </head>
 <body>
     <table class="layui-hide" id="test" lay-filter="test"></table>
-    <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
-    <div id="main" style="width: 100%;min-height:600px;"></div>
+    <div id="main" style="width: 100%;min-height:590px;"></div>
 <script type="text/javascript">
     var chartDom = document.getElementById('main');
     var myChart = echarts.init(chartDom);
@@ -42,6 +41,7 @@
             }
 
             option = {
+                color: ['#FF0087','#80FFA5', '#FFBF00' ,'#37A2FF'],
                 title: {
                     text: ''
                 },
@@ -74,21 +74,109 @@
                     {
                         name: 'Size',
                         type: 'line',
+                        smooth: true,
+                         lineStyle: {
+                            width: 0
+                        },
+                        showSymbol: false,
+                        areaStyle: {
+                            opacity: 0.8,
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgb(255, 0, 135)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgb(135, 0, 157)'
+                                }
+                            ])
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
                         data: ALL_data
                     },
                     {
                         name: 'ALL',
                         type: 'line',
+                        smooth: true,
+                        lineStyle: {
+                            width: 0
+                        },
+                        showSymbol: false,
+                        areaStyle: {
+                            opacity: 0.8,
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgb(128, 255, 165)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgb(1, 191, 236)'
+                                }
+                            ])
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
                         data: Img_data
                     },
                     {
                         name: 'PC',
                         type: 'line',
+                        smooth: true,
+                        lineStyle: {
+                            width: 0
+                        },
+                        showSymbol: false,
+                        label: {
+                            show: true,
+                            position: 'top'
+                        },
+                        areaStyle: {
+                            opacity: 0.8,
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgb(255, 191, 0)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgb(224, 62, 76)'
+                                }
+                            ])
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
                         data: pc_data
                     },
                     {
                         name: 'Phone',
                         type: 'line',
+                        smooth: true,
+                        lineStyle: {
+                            width: 0
+                        },
+                        showSymbol: false,
+                        areaStyle: {
+                            opacity: 0.8,
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgb(55, 162, 255)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgb(116, 21, 219)'
+                                }
+                            ])
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
                         data: phone_data
                     },
                 ]

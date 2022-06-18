@@ -134,7 +134,11 @@
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree" lay-filter="test">
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:;">页面数据统计</a>
+                    <a href="javascript:;">
+                        <i class="layui-icon layui-icon-home" style="font-size: 14px; margin-right: 5px;"></i>
+                        <cite>页面数据统计</cite>
+
+                    </a>
                     <dl class="layui-nav-child">
                         <dd class="layui-this"><a href="javascript:;" onclick="open_page('success')">成功数据统计</a></dd>
                         <dd><a href="javascript:;" onclick="open_page('fail')">失败数据统计</a></dd>
@@ -142,13 +146,20 @@
                     </dl>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="javascript:;">链接数据统计</a>
+                    <a href="javascript:;">
+                        <i class="layui-icon layui-icon-component" style="font-size: 14px; margin-right: 5px;"></i>
+                        <cite>链接数据统计</cite>
+                    </a>
                     <dl class="layui-nav-child">
+                        <dd><a href="javascript:;" onclick="open_page('reDownload')">重新下载列表</a></dd>
                         <dd><a href="javascript:;" onclick="open_page('failImg')">失败数据统计</a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="javascript:;">下载全量统计</a>
+                    <a href="javascript:;">
+                        <i class="layui-icon layui-icon-template" style="font-size: 14px; margin-right: 5px;"></i>
+                        <cite>下载全量统计</cite>
+                    </a>
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:;" onclick="open_page('stats4hour')">过去24小时统计</a></dd>
                         <dd><a href="javascript:;" onclick="open_page('stats4day')">下载按日统计</a></dd>
@@ -156,9 +167,11 @@
                         <dd><a href="javascript:;" onclick="open_page('stats4year')">下载按年统计</a></dd>
                     </dl>
                 </li>
-                <li class="layui-nav-item"><a href="javascript:;" onclick="open_page('reDownload')">重新下载列表</a></li>
                 <li class="layui-nav-item">
-                    <a>质量分类统计</a>
+                    <a href="javascript:;">
+                        <i class="layui-icon layui-icon-senior" style="font-size: 14px; margin-right: 5px;"></i>
+                        <cite>质量分类统计</cite>
+                    </a>
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:;" onclick="open_page('quality_8')">巨顶质量</a></dd>
                         <dd><a href="javascript:;" onclick="open_page('quality_7')">顶级质量</a></dd>
@@ -191,7 +204,7 @@
 </div>
 <script src="https://www.layuicdn.com/layui-v2.6.8/layui.js"></script>
 <script type="text/javascript">
-     $(document).ready(function(){
+    $(document).ready(function () {
         getWindowInfo()
     });
     //JS
