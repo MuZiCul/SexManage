@@ -40,7 +40,9 @@ class ConfigModel(db.Model):
 class LogModel(db.Model):
     __tablename__ = "log"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    level = db.Column(db.String(50), default='')
     content = db.Column(db.String(200), default='')
+    time = db.Column(db.String(100), default='')
     create_date = db.Column(db.DateTime, default=datetime.now)
 
 
