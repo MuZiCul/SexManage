@@ -39,8 +39,7 @@
             , totalRow: true
             , cellMinWidth: 80
             , cols: [[
-                {type: 'checkbox', fixed: 'left'}
-                , {field: 'id', title: 'ID', fixed: 'left', sort: true, width: 80, totalRowText: '合计'}
+                , {field: 'id', title: 'ID', sort: true, width: 80, totalRowText: '合计'}
                 , {
                     field: 'title', title: '主题', align: 'center', templet: function (res) {
                         return '<a href=' + res.url + '><em>' + res.title + '</em></a>'
@@ -49,7 +48,7 @@
                 , {field: 'url', title: 'Url', align: 'center', sort: true}
                 , {field: 'reason', title: '原因', align: 'center', sort: true}
                 , {field: 'create_date', title: '创建时间', align: 'center', sort: true}
-                , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 120}
+                , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 174}
             ]]
             , page: true
         });
