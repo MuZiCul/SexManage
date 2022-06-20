@@ -32,6 +32,8 @@ def log_data():
     data_list = []
     for i in data[start:end]:
         dit = {'id': i.id if i.id else '暂无信息',
+               'level': str(i.level) if i.level else '暂无信息',
+               'time': str(i.time) if i.time else '暂无信息',
                'create_date': str(i.create_date) if i.create_date else '暂无信息',
                'content': i.content if i.content else '暂无信息'}
         data_list.append(dit)
