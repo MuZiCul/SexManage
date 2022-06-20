@@ -2,12 +2,13 @@
 <html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
-    <title>下载失败数据</title>
+    <title>重新下载列表</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui/css/layui.css" media="all">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
 </head>
 <body>
 
@@ -15,13 +16,12 @@
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-
-        <button class="layui-btn layui-btn-sm" lay-event="isTips">Tips：点击Url打开原网页</button>
+                <button id="clear" class="layui-btn layui-btn-sm" lay-event="isClear">清理列表</button>
+        <button class="layui-btn layui-btn-sm" lay-event="isTips">Tips：点击标题打开原网页</button>
     </div>
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="copy">复制</a>
-    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="reDownload">重下</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
@@ -33,21 +33,32 @@
         const table = layui.table;
         table.render({
             elem: '#test'
-            , url: '/fiu'
+            , url: '/riu'
             , toolbar: '#toolbarDemo'
-            , title: '失败信息表'
+            , title: '重下信息表'
             , totalRow: true
             , cellMinWidth: 80
             , cols: [[
                 {type: 'checkbox', fixed: 'left'}
                 , {field: 'id', title: 'ID', fixed: 'left', sort: true, width: 80, totalRowText: '合计'}
                 , {
-                    field: 'title', title: '主题', align: 'center', templet: function (res) {
-                        return '<a href=' + res.url + '><em>' + res.title + '</em></a>'
+                    field: 'title', title: '标题', align: 'center', templet: function (res) {
+                        return '<a href=http://t66y.com/' + res.url + '><em>' + res.title + '</em></a>'
                     }
                 }
-                , {field: 'url', title: 'Url', align: 'center', sort: true}
-                , {field: 'reason', title: '原因', align: 'center', sort: true}
+                , {
+                    field: 'url', title: 'Url', align: 'center', templet: function (res) {
+                        return '<em>' + res.url + '</em>'
+                    }
+                }
+                , {field: 'state', title: '重下状态', align: 'center', sort: true, templet: function (res) {
+                    if (res.state){
+                        return '已完成'
+                    }else {
+                        return '未开始'
+                    }
+                    }}
+                , {field: 'count', title: '尝试次数', align: 'center', sort: true}
                 , {field: 'create_date', title: '创建时间', align: 'center', sort: true}
                 , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 120}
             ]]
@@ -56,22 +67,21 @@
 
         //工具栏事件
         table.on('toolbar(test)', function (obj) {
-            const checkStatus = table.checkStatus(obj.config.id);
-            let value;
             switch (obj.event) {
-                case 'getCheckData':
-                    value = checkStatus.data;
-                    layer.alert(JSON.stringify(value));
-                    break;
-                case 'getCheckLength':
-                    value = checkStatus.data;
-                    layer.msg('选中了：' + value.length + ' 个');
-                    break;
-                case 'isAll':
-                    layer.msg(checkStatus.isAll ? '全选' : '未全选')
-                    break;
                 case 'isTips':
-                    layer.msg('Tips：点击Url可打开原网页哦！')
+                    layer.msg('Tips：点击标题可打开原网页哦！')
+                    break;
+                case 'isClear':
+                    layer.msg('开始清理失败列表！')
+                    $("#clear").attr("disabled", true);
+                    $.ajax({
+                        url: '/clearReDownPage', method: 'post', success: function (data) {
+                            if (200 === data.code || '200' === data.code) {
+                                layer.msg(data.msg)
+                                $("#clear").attr("disabled", false);
+                            }
+                        }
+                    })
                     break;
             }
         });
@@ -84,32 +94,9 @@
                     obj.del();
                     layer.close(index);
                 });
-            } else if (obj.event === 'edit') {
-                layer.prompt({
-                    formType: 2
-                    , value: data.url
-                }, function (value, index) {
-                    obj.update({
-                        email: value
-                    });
-                    layer.close(index);
-                });
             } else if (obj.event === 'copy') {
-                const flag = copyText(data.url); //传递文本
+                const flag = copyText('http://t66y.com/'+data.url); //传递文本
                 layer.msg(flag ? "复制成功！" : "复制失败！");
-            } else if (obj.event === 'reDownload') {
-                $.ajax({
-                    url: '/addReImg', method: 'post', data: {
-                        'type': 0, 'id': data.id
-                    }, success: function (data) {
-                        if (200 === data.code || '200' === data.code) {
-                            obj.del();
-                            layer.msg(data.msg)
-                        } else {
-                            layer.msg(data.msg)
-                        }
-                    }
-                })
             }
         });
     });
@@ -124,15 +111,15 @@
             textarea.setSelectionRange(0, textarea.value.length);//获取光标起始位置到结束位置
         else
             textarea.select();
-        let flag;
+        let value;
         try {
-            flag = document.execCommand("copy");//执行复制
+            value = document.execCommand("copy");//执行复制
         } catch (eo) {
-            flag = false;
+            value = false;
         }
         document.body.removeChild(textarea);//删除元素
         currentFocus.focus();
-        return flag;
+        return value;
     }
 </script>
 

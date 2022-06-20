@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
-    <title>下载失败数据</title>
+    <title>下载成功数据</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -33,9 +33,9 @@
         const table = layui.table;
         table.render({
             elem: '#test'
-            , url: '/fiu'
+            , url: '/siu'
             , toolbar: '#toolbarDemo'
-            , title: '失败信息表'
+            , title: '成功信息表'
             , totalRow: true
             , cellMinWidth: 80
             , cols: [[
@@ -47,7 +47,23 @@
                     }
                 }
                 , {field: 'url', title: 'Url', align: 'center', sort: true}
-                , {field: 'reason', title: '原因', align: 'center', sort: true}
+                , {
+                    field: 'size', title: '尺寸', align: 'center', sort: true, templet: function (res) {
+                        let num = Number(res.size);
+                        if (num < 1024) {
+                            num = num.toFixed(2);
+                            return num + 'B'
+                        } else if (num < 1024*1024) {
+                            num = num / 1024
+                            num = num.toFixed(2);
+                            return num + 'KB'
+                        } else if (num < 1024*1024*1024) {
+                            num = num / 1024 / 1024
+                            num = num.toFixed(2);
+                            return num + 'MB'
+                        }
+                    }
+                }
                 , {field: 'create_date', title: '创建时间', align: 'center', sort: true}
                 , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 120}
             ]]

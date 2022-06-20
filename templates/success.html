@@ -295,7 +295,7 @@
                         if (num < 1024) {
                             num = num.toFixed(2);
                             return num + 'MB'
-                        } else if (num < 10240) {
+                        } else if (num < 1024*1024) {
                             num = num / 1024
                             num = num.toFixed(2);
                             return num + 'GB'

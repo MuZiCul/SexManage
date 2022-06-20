@@ -9,7 +9,8 @@ from flask import (
 )
 from config.decorators import login_required
 from config.exts import db
-from config.models import SuccessPageUrlModel, FailPageUrlModel, FailImgModel, ConfigModel, DownloadAgainPageUrlModel
+from config.models import SuccessPageUrlModel, FailPageUrlModel, FailImgModel, ConfigModel, DownloadAgainPageUrlModel, \
+    ReImgUrlModel, SuccessImgModel
 
 bp = Blueprint('data', __name__, url_prefix='/')
 
@@ -141,6 +142,18 @@ def reDownload():
     return render_template('reDownload.html')
 
 
+@bp.route('/successImg', methods=['GET', 'POST'])
+@login_required
+def successImg():
+    return render_template('successImg.html')
+
+
+@bp.route('/reImgDownload', methods=['GET', 'POST'])
+@login_required
+def reImgDownload():
+    return render_template('reImgDownload.html')
+
+
 @bp.route('/fpu', methods=['GET', 'POST'])
 @login_required
 def fpu():
@@ -183,6 +196,27 @@ def rpu():
     return dic
 
 
+@bp.route('/riu', methods=['GET', 'POST'])
+@login_required
+def riu():
+    page = int(request.args.get('page'))
+    limit = int(request.args.get('limit'))
+    start = (page - 1) * limit
+    end = start + limit
+    data = ReImgUrlModel.query.order_by(db.text('-create_date')).all()
+    data_list = []
+    for i in data[start:end]:
+        dit = {'id': i.id if i.id is not None else '暂无信息',
+               'url': i.url if i.url is not None else '暂无信息',
+               'create_date': str(i.create_date) if i.create_date else '暂无信息',
+               'state': i.state if i.state is not None else '暂无信息',
+               'count': i.count if i.count is not None else '暂无信息',
+               'title': i.title if len(i.title) else '暂无信息'}
+        data_list.append(dit)
+    dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data), 'data': data_list}
+    return dic
+
+
 @bp.route('/fiu', methods=['GET', 'POST'])
 @login_required
 def fiu():
@@ -190,10 +224,30 @@ def fiu():
     limit = int(request.args.get('limit'))
     start = (page - 1) * limit
     end = start + limit
-    data = FailImgModel.query.all()
+    data = FailImgModel.query.order_by(db.text('-create_date')).all()
     data_list = []
     for i in data[start:end]:
-        dit = {'id': i.id, 'url': i.url, 'create_date': str(i.create_date)}
+        dit = {'id': i.id
+            , 'url': i.url
+            , 'title': i.title if i.title else '暂无信息'
+            , 'reason': i.reason if i.reason else '暂无信息'
+            , 'create_date': str(i.create_date)}
+        data_list.append(dit)
+    dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data), 'data': data_list}
+    return dic
+
+
+@bp.route('/siu', methods=['GET', 'POST'])
+@login_required
+def siu():
+    page = int(request.args.get('page'))
+    limit = int(request.args.get('limit'))
+    start = (page - 1) * limit
+    end = start + limit
+    data = SuccessImgModel.query.order_by(db.text('-create_date')).all()
+    data_list = []
+    for i in data[start:end]:
+        dit = {'id': i.id, 'size': i.size, 'title': i.title, 'url': i.url, 'create_date': str(i.create_date)}
         data_list.append(dit)
     dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data), 'data': data_list}
     return dic
@@ -277,6 +331,32 @@ def addAgainDownload():
         elif type == 0 or type == '0':
             pageUrl = FailPageUrlModel.query.filter_by(id=id).first()
             again = DownloadAgainPageUrlModel(url=pageUrl.url, title=pageUrl.title)
+            db.session.add(again)
+            db.session.commit()
+            db.session.delete(pageUrl)
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': '添加到重新下载列表成功！'})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': f'添加失败:{str(e)}'})
+
+
+@bp.route('/addReImg', methods=['GET', 'POST'])
+@login_required
+def addReImg():
+    try:
+        type = request.form.get('type')
+        id = request.form.get('id')
+        if type == 1 or type == '1':
+            pageUrl = SuccessImgModel.query.filter_by(id=id).first()
+            again = ReImgUrlModel(url=pageUrl.url, title=pageUrl.title)
+            db.session.add(again)
+            db.session.commit()
+            db.session.delete(pageUrl)
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': '添加到重新下载列表成功！'})
+        elif type == 0 or type == '0':
+            pageUrl = FailImgModel.query.filter_by(id=id).first()
+            again = ReImgUrlModel(url=pageUrl.url, title=pageUrl.title)
             db.session.add(again)
             db.session.commit()
             db.session.delete(pageUrl)
