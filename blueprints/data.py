@@ -186,10 +186,14 @@ def rpu():
 @bp.route('/fiu', methods=['GET', 'POST'])
 @login_required
 def fiu():
+    page = int(request.args.get('page'))
+    limit = int(request.args.get('limit'))
+    start = (page - 1) * limit
+    end = start + limit
     data = FailImgModel.query.all()
     data_list = []
-    for i in data:
-        dit = {'id': i.id, 'url': i.url, 'create_date': i.create_date}
+    for i in data[start:end]:
+        dit = {'id': i.id, 'url': i.url, 'create_date': str(i.create_date)}
         data_list.append(dit)
     dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data), 'data': data_list}
     return dic
