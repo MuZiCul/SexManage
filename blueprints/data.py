@@ -155,6 +155,7 @@ def fpu():
                'url': i.url,
                'publish_date': i.publish_date if i.publish_date else '暂无数据',
                'create_date': str(i.create_date) if i.create_date else '暂无信息',
+               'reason': str(i.reason) if i.reason else '暂无信息',
                'title': i.title if i.title else '暂无信息'}
         data_list.append(dit)
     dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data), 'data': data_list}
@@ -202,6 +203,11 @@ def delData():
     if kind == 1 or kind == '1':
         spu = SuccessPageUrlModel.query.filter_by(id=id).first()
         db.session.delete(spu)
+        db.session.commit()
+        return jsonify({'code': 200})
+    if kind == 2 or kind == '2':
+        fpu = FailPageUrlModel.query.filter_by(id=id).first()
+        db.session.delete(fpu)
         db.session.commit()
         return jsonify({'code': 200})
     return jsonify({'code': 400})

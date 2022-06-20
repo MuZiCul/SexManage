@@ -58,6 +58,7 @@
                 }
                 , {field: 'publish_date', title: '发布时间', align: 'center', sort: true}
                 , {field: 'create_date', title: '失败时间', align: 'center', sort: true}
+                , {field: 'reason', title: '失败原因', align: 'center', sort: true}
                 , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 174}
             ]]
             , page: true
@@ -102,8 +103,19 @@
             //console.log(obj)
             if (obj.event === 'del') {
                 layer.confirm('真的删除行么', function (index) {
-                    obj.del();
-                    layer.close(index);
+                    $.ajax({
+                        url: '/delData', method: 'post', data: {
+                            'type': 2, 'id': data.id
+                        }, success: function (data) {
+                            if (200 === data.code || '200' === data.code) {
+                                obj.del();
+                                layer.close(index);
+                            } else {
+                                layer.close(index);
+                                layer.msg('删除失败')
+                            }
+                        }
+                    })
                 });
             } else if (obj.event === 'edit') {
                 layer.prompt({

@@ -49,6 +49,7 @@ class FailPageUrlModel(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     url = db.Column(db.String(200), default='')
     title = db.Column(db.String(200), default='')
+    reason = db.Column(db.String(200), default='')
     publish_date = db.Column(db.String(200), default='')
     create_date = db.Column(db.DateTime, default=datetime.now)
 
@@ -67,4 +68,5 @@ class FailImgModel(db.Model):
     __tablename__ = "fiu"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     url = db.Column(db.String(200), default='')
+    reason = db.Column(db.String(200), default='')
     create_date = db.Column(db.DateTime, default=datetime.now)
