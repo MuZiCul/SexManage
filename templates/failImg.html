@@ -38,8 +38,7 @@
             , title: '失败信息表'
             , totalRow: true
             , cellMinWidth: 80
-            , cols: [[
-                , {field: 'id', title: 'ID', sort: true, width: 80, totalRowText: '合计'}
+            , cols: [[{field: 'id', title: 'ID', sort: true, width: 80, totalRowText: '合计'}
                 , {
                     field: 'title', title: '主题', align: 'center', templet: function (res) {
                         return '<a href=' + res.url + '><em>' + res.title + '</em></a>'

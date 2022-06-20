@@ -38,8 +38,7 @@
             , title: '成功信息表'
             , totalRow: true
             , cellMinWidth: 80
-            , cols: [[
-                , {field: 'id', title: 'ID', sort: true, width: 80, totalRowText: '合计'}
+            , cols: [[{field: 'id', title: 'ID', sort: true, width: 80, totalRowText: '合计'}
                 , {
                     field: 'title', title: '主题', align: 'center', templet: function (res) {
                         return '<a href=' + res.url + '><em>' + res.title + '</em></a>'
@@ -52,11 +51,11 @@
                         if (num < 1024) {
                             num = num.toFixed(2);
                             return num + 'B'
-                        } else if (num < 1024*1024) {
+                        } else if (num < 1024 * 1024) {
                             num = num / 1024
                             num = num.toFixed(2);
                             return num + 'KB'
-                        } else if (num < 1024*1024*1024) {
+                        } else if (num < 1024 * 1024 * 1024) {
                             num = num / 1024 / 1024
                             num = num.toFixed(2);
                             return num + 'MB'

@@ -16,7 +16,7 @@
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-                <button id="clear" class="layui-btn layui-btn-sm" lay-event="isClear">清理列表</button>
+        <button id="clear" class="layui-btn layui-btn-sm" lay-event="isClear">清理列表</button>
         <button class="layui-btn layui-btn-sm" lay-event="isTips">Tips：点击标题打开原网页</button>
     </div>
 </script>
@@ -38,8 +38,7 @@
             , title: '重下信息表'
             , totalRow: true
             , cellMinWidth: 80
-            , cols: [[
-                , {field: 'id', title: 'ID', sort: true, width: 80, totalRowText: '合计'}
+            , cols: [[{field: 'id', title: 'ID', sort: true, width: 80, totalRowText: '合计'}
                 , {
                     field: 'title', title: '标题', align: 'center', templet: function (res) {
                         return '<a href=http://t66y.com/' + res.url + '><em>' + res.title + '</em></a>'
@@ -50,13 +49,15 @@
                         return '<em>' + res.url + '</em>'
                     }
                 }
-                , {field: 'state', title: '重下状态', align: 'center', sort: true, templet: function (res) {
-                    if (res.state){
-                        return '已完成'
-                    }else {
-                        return '未开始'
+                , {
+                    field: 'state', title: '重下状态', align: 'center', sort: true, templet: function (res) {
+                        if (res.state) {
+                            return '已完成'
+                        } else {
+                            return '未开始'
+                        }
                     }
-                    }}
+                }
                 , {field: 'count', title: '尝试次数', align: 'center', sort: true}
                 , {field: 'create_date', title: '创建时间', align: 'center', sort: true}
                 , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 120}
@@ -94,7 +95,7 @@
                     layer.close(index);
                 });
             } else if (obj.event === 'copy') {
-                const flag = copyText('http://t66y.com/'+data.url); //传递文本
+                const flag = copyText('http://t66y.com/' + data.url); //传递文本
                 layer.msg(flag ? "复制成功！" : "复制失败！");
             }
         });

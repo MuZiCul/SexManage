@@ -42,7 +42,7 @@
             }
 
             option = {
-                color: ['#FF0087','#80FFA5', '#FFBF00' ,'#37A2FF','#00DDFF'],
+                color: ['#FF0087', '#80FFA5', '#FFBF00', '#37A2FF', '#00DDFF'],
                 title: {
                     text: ''
                 },
@@ -221,14 +221,14 @@
         }
     })
 </script>
-    <style>
-        /* 移动端 */
-        @media screen and (max-width: 768px) {
-            .stats {
-                display: none;
-            }
+<style>
+    /* 移动端 */
+    @media screen and (max-width: 768px) {
+        .stats {
+            display: none;
         }
-    </style>
+    }
+</style>
 
 
 <script type="text/html" id="toolbarDemo">
@@ -262,8 +262,7 @@
             , title: '成功信息表'
             , totalRow: true
             , cellMinWidth: 80
-            , cols: [[
-                , {field: 'id', title: 'ID',sort: true,totalRowText: '合计'}
+            , cols: [[{field: 'id', title: 'ID', sort: true, totalRowText: '合计'}
                 , {
                     field: 'title', title: '标题', align: 'center', templet: function (res) {
                         if (res.url.includes("read")) {
@@ -302,7 +301,7 @@
                         if (num < 1024) {
                             num = num.toFixed(2);
                             return num + 'MB'
-                        } else if (num < 1024*1024) {
+                        } else if (num < 1024 * 1024) {
                             num = num / 1024
                             num = num.toFixed(2);
                             return num + 'GB'

@@ -16,9 +16,9 @@
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-{#        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>#}
-{#        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>#}
-{#        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>#}
+        {#        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>#}
+        {#        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>#}
+        {#        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>#}
         <button id="clear" class="layui-btn layui-btn-sm" lay-event="isClear">清理列表</button>
         <button class="layui-btn layui-btn-sm" lay-event="isTips">Tips：点击标题打开原网页</button>
     </div>
@@ -43,8 +43,7 @@
             , title: '失败信息表'
             , totalRow: true
             , cellMinWidth: 80
-            , cols: [[
-                , {field: 'id', title: 'ID', sort: true, width: 80, totalRowText: '合计'}
+            , cols: [[{field: 'id', title: 'ID', sort: true, width: 80, totalRowText: '合计'}
                 , {
                     field: 'title', title: '标题', align: 'center', templet: function (res) {
                         return '<a href=http://t66y.com/' + res.url + '><em>' + res.title + '</em></a>'
