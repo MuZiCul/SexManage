@@ -107,12 +107,12 @@ def success():
 
     if all_size < 1024:
         all_size = str(round(all_size, 2)) + 'MB'
-    elif all_size < 10240:
+    elif all_size < 1024*1024:
         all_size = str(round(all_size/1024, 2)) + 'GB'
-    elif all_size < 102400:
-        all_size = str(round(all_size/10240, 2)) + 'TB'
-    elif all_size < 1024000:
-        all_size = str(round(all_size/102400, 2)) + 'pB'
+    elif all_size < 1024*1024*1024:
+        all_size = str(round(all_size/1024/1024, 2)) + 'TB'
+    elif all_size < 1024*1024*1024*1024:
+        all_size = str(round(all_size/1024/1024/1024, 2)) + 'PB'
     dic = {'all_size': all_size, 'img_size': img_size, 'phones': phones, 'pcs': pcs, 'last_time': last_date}
 
     return render_template('success.html', data=dic)
