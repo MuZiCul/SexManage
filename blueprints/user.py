@@ -3,20 +3,11 @@ import json
 from flask import (
     Blueprint,
     render_template,
-    request,
-    redirect,
-    url_for,
-    jsonify,
-    session,
-    flash,
-    g
-)
-from werkzeug.security import check_password_hash
+    request)
 
 from config.decorators import login_required
 from config.exts import db
-from config.models import UserModel, LogModel
-from utils.Aescrypt import Aescrypt
+from config.models import LogModel
 
 bp = Blueprint('user', __name__, url_prefix='/')
 
