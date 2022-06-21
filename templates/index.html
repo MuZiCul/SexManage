@@ -124,8 +124,7 @@
                     {% if data %}{{ data.get('username') }}{% endif %}
                 </a>
                 <dl class="layui-nav-child">
-                    {#                    <dd><a href="">Your Profile</a></dd>#}
-                    {#                    <dd><a href="">Settings</a></dd>#}
+                    <dd><a href="{{ url_for('user.sensitive') }}">Sensitive</a></dd>
                     <dd><a href="{{ url_for('login.logoff') }}">Sign out</a></dd>
                 </dl>
             </li>

@@ -8,7 +8,7 @@ from sqlalchemy import func
 
 from config.decorators import login_required
 from config.exts import db
-from config.models import SuccessPageUrlModel, ConfigModel
+from config.models import SuccessPageUrlModel
 
 bp = Blueprint('quality', __name__, url_prefix='/')
 
@@ -71,11 +71,17 @@ def get_quality():
                 publish_date = publish_date[7:]
         else:
             publish_date = '暂无数据'
-
+        if g.sensitive == '1':
+            if i.title:
+                title = i.title
+            else:
+                title = '暂无信息'
+        else:
+            title = '***'
         dit = {'id': i.id if i.id else '暂无信息',
                'url': url,
                'create_date': str(i.create_date) if i.create_date else '暂无信息',
-               'title': i.title if i.title else '暂无信息',
+               'title': title,
                'all_size': i.all_size if i.all_size else '暂无信息',
                'avg_size': i.avg_size if i.avg_size else '暂无信息',
                'pcImg': i.pcImg if i.pcImg == 0 or i.pcImg else '暂无信息',

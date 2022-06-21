@@ -33,7 +33,8 @@ class SuccessPageUrlModel(db.Model):
 class ConfigModel(db.Model):
     __tablename__ = "config"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    last_date = db.Column(db.String(200), default='')
+    key = db.Column(db.String(200), default='')
+    value = db.Column(db.String(200), default='')
     create_date = db.Column(db.DateTime, default=datetime.now)
 
 

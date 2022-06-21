@@ -3,11 +3,11 @@ import json
 from flask import (
     Blueprint,
     render_template,
-    request)
+    request, redirect, url_for)
 
 from config.decorators import login_required
 from config.exts import db
-from config.models import LogModel
+from config.models import LogModel, ConfigModel
 
 bp = Blueprint('user', __name__, url_prefix='/')
 
@@ -36,5 +36,20 @@ def log_data():
 @login_required
 def log():
     return render_template('log.html')
+
+
+@bp.route('/sensitive', methods=['GET', 'POST'])
+@login_required
+def sensitive():
+    data = ConfigModel.query.filter_by(key='sensitive').first()
+    if data:
+        if data.value == '1':
+            data.value = '0'
+            db.session.commit()
+        else:
+            data.value = '1'
+            db.session.commit()
+
+    return redirect(url_for('login.logoff'))
 
 

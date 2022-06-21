@@ -5,7 +5,7 @@ from datetime import datetime
 from flask import (
     Blueprint,
     render_template,
-    request, jsonify,
+    request, jsonify, g,
 )
 from config.decorators import login_required
 from config.exts import db
@@ -48,22 +48,25 @@ def spu():
         else:
             publish_date = '暂无数据'
         kind = '自拍'
-        if i.title:
-            title = str(i.title).replace(' ', '')
-            if '洲]' in title:
-                title = title[4:]
-                kind = '亚洲'
-            elif '真]' in title:
-                title = title[4:]
-                kind = '写真'
-            pnm = re.findall('\[(.*?)]', title, re.S)
-            if len(pnm) > 1:
-                pnm.reverse()
-            if pnm:
-                if 'P]' in title:
-                    title = title.replace(f'[{pnm[0]}]', '')
+        if g.sensitive == '1':
+            if i.title:
+                title = str(i.title).replace(' ', '')
+                if '洲]' in title:
+                    title = title[4:]
+                    kind = '亚洲'
+                elif '真]' in title:
+                    title = title[4:]
+                    kind = '写真'
+                pnm = re.findall('\[(.*?)]', title, re.S)
+                if len(pnm) > 1:
+                    pnm.reverse()
+                if pnm:
+                    if 'P]' in title:
+                        title = title.replace(f'[{pnm[0]}]', '')
+            else:
+                title = '暂无信息'
         else:
-            title = '暂无信息'
+            title = '***'
 
         dit = {'id': i.id if i.id else '暂无信息',
                'url': url,
@@ -164,12 +167,19 @@ def fpu():
     data = FailPageUrlModel.query.order_by(db.text('-create_date')).all()
     data_list = []
     for i in data[start:end]:
+        if g.sensitive == '1':
+            if i.title:
+                title = i.title
+            else:
+                title = '暂无信息'
+        else:
+            title = '***'
         dit = {'id': i.id if i.id else '暂无信息',
                'url': i.url,
                'publish_date': i.publish_date if i.publish_date else '暂无数据',
                'create_date': str(i.create_date) if i.create_date else '暂无信息',
                'reason': str(i.reason) if i.reason else '暂无信息',
-               'title': i.title if i.title else '暂无信息'}
+               'title': title}
         data_list.append(dit)
     dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data), 'data': data_list}
     return dic
@@ -185,12 +195,19 @@ def rpu():
     data = DownloadAgainPageUrlModel.query.order_by(db.text('-create_date')).all()
     data_list = []
     for i in data[start:end]:
+        if g.sensitive == '1':
+            if i.title:
+                title = i.title
+            else:
+                title = '暂无信息'
+        else:
+            title = '***'
         dit = {'id': i.id if i.id is not None else '暂无信息',
                'url': i.url if i.url is not None else '暂无信息',
                'create_date': str(i.create_date) if i.create_date else '暂无信息',
                'state': i.state if i.state is not None else '暂无信息',
                'count': i.count if i.count is not None else '暂无信息',
-               'title': i.title if len(i.title) else '暂无信息'}
+               'title': title}
         data_list.append(dit)
     dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data), 'data': data_list}
     return dic
@@ -206,12 +223,19 @@ def riu():
     data = ReImgUrlModel.query.order_by(db.text('-create_date')).all()
     data_list = []
     for i in data[start:end]:
+        if g.sensitive == '1':
+            if i.title:
+                title = i.title
+            else:
+                title = '暂无信息'
+        else:
+            title = '***'
         dit = {'id': i.id if i.id is not None else '暂无信息',
                'url': i.url if i.url is not None else '暂无信息',
                'create_date': str(i.create_date) if i.create_date else '暂无信息',
                'state': i.state if i.state is not None else '暂无信息',
                'count': i.count if i.count is not None else '暂无信息',
-               'title': i.title if len(i.title) else '暂无信息'}
+               'title': title}
         data_list.append(dit)
     dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data), 'data': data_list}
     return dic
@@ -227,9 +251,16 @@ def fiu():
     data = FailImgModel.query.order_by(db.text('-create_date')).all()
     data_list = []
     for i in data[start:end]:
+        if g.sensitive == '1':
+            if i.title:
+                title = i.title
+            else:
+                title = '暂无信息'
+        else:
+            title = '***'
         dit = {'id': i.id
             , 'url': i.url
-            , 'title': i.title if i.title else '暂无信息'
+            , 'title': title
             , 'reason': i.reason if i.reason else '暂无信息'
             , 'create_date': str(i.create_date)}
         data_list.append(dit)
@@ -247,7 +278,7 @@ def siu():
     data = SuccessImgModel.query.order_by(db.text('-create_date')).all()
     data_list = []
     for i in data[start:end]:
-        dit = {'id': i.id, 'size': i.size, 'title': i.title, 'url': i.url, 'create_date': str(i.create_date)}
+        dit = {'id': i.id, 'size': i.size, 'title': i.title if g.sensitive == '1' else '***', 'url': i.url, 'create_date': str(i.create_date)}
         data_list.append(dit)
     dic = {'code': 0, 'msg': 'SUCCESS', 'count': len(data), 'data': data_list}
     return dic

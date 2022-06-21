@@ -3,7 +3,7 @@ import config.config as config
 from config.exts import db, mail
 from blueprints import index_bp, data_bp, user_bp, login_bp, quality_bp, size_bp
 from flask_migrate import Migrate
-from config.models import UserModel
+from config.models import UserModel, ConfigModel
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -31,7 +31,17 @@ def before_request():
     if user_id:
         try:
             user = UserModel.query.get(user_id)
-            g.user = user
+            if user:
+                g.user = user
+            else:
+                g.user = ''
+            conf = ConfigModel.query.all()
+            for i in conf:
+                if i.key == 'sensitive':
+                    g.sensitive = i.value
+                if i.key == 'last_date':
+                    g.last_date = i.value
+
         except Exception as e:
             print(e)
             g.user = ''
@@ -63,4 +73,3 @@ def demo2(error):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002)
-
