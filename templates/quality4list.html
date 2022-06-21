@@ -7,12 +7,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://lib.baomitu.com/echarts/5.3.3/echarts.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui/css/layui.css" media="all">
     <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
 </head>
 <body>
 
 <table class="layui-hide" id="test" lay-filter="test"></table>
+<div id="main" style="width: 100%;min-height:600px;"></div>
 
 <script src="https://www.layuicdn.com/layui-v2.6.8/layui.js"></script>
 
@@ -27,49 +29,199 @@
             , totalRow: true
             , cellMinWidth: 80
             , cols: [[{
-                    field: 'title', title: '质量名称', align: 'center', totalRowText: '合计', templet: function (res) {
-                        switch (res.title) {
-                            case 0:
-                                return '垃圾质量'
-                            case 1:
-                                return '劣质质量'
-                            case 2:
-                                return '一般质量'
-                            case 3:
-                                return '清晰质量'
-                            case 4:
-                                return '标清质量'
-                            case 5:
-                                return '高清质量'
-                            case 6:
-                                return '超高质量'
-                            case 7:
-                                return '顶级质量'
-                            case 8:
-                                return '巨顶质量'
-                            case 9:
-                                return '含有动图'
-                            default:
-                                return '未知信息'
-                        }
+                field: 'title', title: '质量名称', align: 'center', totalRowText: '合计', templet: function (res) {
+                    switch (res.title) {
+                        case 0:
+                            return '垃圾质量'
+                        case 1:
+                            return '劣质质量'
+                        case 2:
+                            return '一般质量'
+                        case 3:
+                            return '清晰质量'
+                        case 4:
+                            return '标清质量'
+                        case 5:
+                            return '高清质量'
+                        case 6:
+                            return '超高质量'
+                        case 7:
+                            return '顶级质量'
+                        case 8:
+                            return '巨顶质量'
+                        case 9:
+                            return '含有动图'
+                        default:
+                            return '未知信息'
                     }
                 }
-                , {field: 'qualityNum', title: '总链接数', align: 'center', totalRow: true, sort: true,templet: function (res) {
-                    return Number(res.qualityNum).toFixed(0) + '个'
-                    }}
-                , {field: 'qualityAll_size', title: '全部壁纸', align: 'center', totalRow: true, sort: true,templet: function (res) {
-                    return Number(res.qualityAll_size).toFixed(0) + 'P'
-                    }}
-                , {field: 'qualityPcImg', title: '电脑壁纸', align: 'center', totalRow: true, sort: true,templet: function (res) {
-                    return Number(res.qualityPcImg).toFixed(0) + 'P'
-                    }}
-                , {field: 'qualityPhoneImg', title: '手机壁纸', align: 'center', totalRow: true, sort: true,templet: function (res) {
-                    return Number(res.qualityPhoneImg).toFixed(0) + 'P'
-                    }}
+            }
+                , {
+                    field: 'qualityNum',
+                    title: '总链接数',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        return Number(res.qualityNum).toFixed(0) + '个'
+                    }
+                }
+                , {
+                    field: 'qualityAll_size',
+                    title: '全部壁纸',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        return Number(res.qualityAll_size).toFixed(0) + 'P'
+                    }
+                }
+                , {
+                    field: 'qualityPcImg',
+                    title: '电脑壁纸',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        return Number(res.qualityPcImg).toFixed(0) + 'P'
+                    }
+                }
+                , {
+                    field: 'qualityPhoneImg',
+                    title: '手机壁纸',
+                    align: 'center',
+                    totalRow: true,
+                    sort: true,
+                    templet: function (res) {
+                        return Number(res.qualityPhoneImg).toFixed(0) + 'P'
+                    }
+                }
             ]]
             , page: true
         });
     });
+</script>
+
+<script type="text/javascript">
+    var app = {};
+
+    var chartDom = document.getElementById('main');
+    var myChart = echarts.init(chartDom);
+    var option;
+
+    $.ajax({
+        url: '/list4quality', method: 'post', success: function (data) {
+            const res = data.data
+            let t0 = []
+            let t1 = []
+            let t2 = []
+            let t3 = []
+            let t4 = []
+            let t5 = []
+            let t6 = []
+
+            for (let i=0; i<res.length; i++){
+                switch (res[i].title) {
+                    case 0:
+                        t0 = [res[i].qualityNum, res[i].qualityAll_size, res[i].qualityPcImg, res[i].qualityPhoneImg]
+                        break
+                    case 1:
+                        t1 = [res[i].qualityNum, res[i].qualityAll_size, res[i].qualityPcImg, res[i].qualityPhoneImg]
+                        break
+                    case 2:
+                        t2 = [res[i].qualityNum, res[i].qualityAll_size, res[i].qualityPcImg, res[i].qualityPhoneImg]
+                        break
+                    case 3:
+                        t3 = [res[i].qualityNum, res[i].qualityAll_size, res[i].qualityPcImg, res[i].qualityPhoneImg]
+                        break
+                    case 4:
+                        t4 = [res[i].qualityNum, res[i].qualityAll_size, res[i].qualityPcImg, res[i].qualityPhoneImg]
+                        break
+                    case 5:
+                        t5 = [res[i].qualityNum, res[i].qualityAll_size, res[i].qualityPcImg, res[i].qualityPhoneImg]
+                        break
+                    case 6:
+                        t6 = [res[i].qualityNum, res[i].qualityAll_size, res[i].qualityPcImg, res[i].qualityPhoneImg]
+                        break
+                }
+            }
+
+            option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                legend: {
+                    data: ['总链接数', '总壁纸数', '电脑壁纸', '手机壁纸']
+                },
+                toolbox: {
+                    show: true,
+                    orient: 'vertical',
+                    left: 'right',
+                    top: 'center',
+                    feature: {
+                        mark: {show: true},
+                        dataView: {show: true, readOnly: false},
+                        magicType: {show: true, type: ['line', 'bar', 'stack']},
+                        restore: {show: true},
+                        saveAsImage: {show: true}
+                    }
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        axisTick: {show: false},
+                        data: ['垃圾', '劣质', '一般', '清晰', '标清', '高清', '超高']
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value'
+                    }
+                ],
+                series: [
+                    {
+                        name: '总链接数',
+                        type: 'bar',
+                        barGap: 0,
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: [t0[0],t1[0],t2[0],t3[0],t4[0],t5[0],t6[0]]
+                    },
+                    {
+                        name: '总壁纸数',
+                        type: 'bar',
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: [t0[1],t1[1],t2[1],t3[1],t4[1],t5[1],t6[1]]
+                    },
+                    {
+                        name: '电脑壁纸',
+                        type: 'bar',
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: [t0[2],t1[2],t2[2],t3[2],t4[2],t5[2],t6[2]]
+                    },
+                    {
+                        name: '手机壁纸',
+                        type: 'bar',
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: [t0[3],t1[3],t2[3],t3[3],t4[3],t5[3],t6[3]]
+                    }
+                ]
+            };
+
+            option && myChart.setOption(option);
+        }
+    })
+
 </script>
 
 </body>
