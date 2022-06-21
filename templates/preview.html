@@ -23,11 +23,18 @@
             flex-direction: column;
             justify-content: center;
             padding-top: 50px;
+            padding-bottom: 100px;
         }
         .img_src {
             border-radius: 10px;
             border: solid 10px #EFEFEF;
             box-shadow: 0 10px 100px rgb(0 0 0 / 30%);
+        }
+        /* 移动端 */
+        @media screen and (max-width: 768px) {
+            #legend {
+                font-size: 14px
+            }
         }
     </style>
 </head>
@@ -35,7 +42,7 @@
 
 <div class="title-top">
 <fieldset class="layui-elem-field layui-field-title ">
-    <legend>
+    <legend id="legend">
         {% if inf %}
             {{ inf.kind }}{{ inf.title }} - {{ inf.quality }} - Size:{{ inf.all_size }}MB - Avg:{{ inf.avg_size }}MB -
             Nums:{{ inf.img_size }}P - PC:{{ inf.pcImg }}P - Phone:{{ inf.phoneImg }}P -Time:{{ inf.create_date }}
