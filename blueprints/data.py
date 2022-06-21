@@ -157,6 +157,23 @@ def reImgDownload():
     return render_template('reImgDownload.html')
 
 
+@bp.route('/preview', methods=['GET', 'POST'])
+@login_required
+def preview():
+    page_id = request.args.get('id')
+    img = SuccessImgModel.query.filter_by(page_id=page_id).all()
+    inf = SuccessPageUrlModel.query.filter_by(id=page_id).first()
+    DQ = ['垃圾', '劣质', '一般', '清晰', '标清', '高清', '超高', '顶级', '巨顶', '动图']
+    if inf.kind == 0:
+        inf.kind = '[亚洲]'
+    elif inf.kind == 1:
+        inf.kind = '[写真]'
+    elif inf.kind == 2:
+        inf.kind = '[自拍]'
+    inf.quality = DQ[inf.quality]
+    return render_template('preview.html', img=img, inf=inf)
+
+
 @bp.route('/fpu', methods=['GET', 'POST'])
 @login_required
 def fpu():

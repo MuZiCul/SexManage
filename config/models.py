@@ -83,6 +83,7 @@ class FailImgModel(db.Model):
     url = db.Column(db.String(200), default='')
     title = db.Column(db.String(200), default='')
     reason = db.Column(db.String(200), default='')
+    page_id = db.Column(db.Integer, default=0)
     create_date = db.Column(db.DateTime, default=datetime.now)
 
 
@@ -92,4 +93,5 @@ class SuccessImgModel(db.Model):
     url = db.Column(db.String(200), default='')
     title = db.Column(db.String(200), default='')
     size = db.Column(db.Integer, default=0)
+    page_id = db.Column(db.Integer, default=0)
     create_date = db.Column(db.DateTime, default=datetime.now)
