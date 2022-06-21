@@ -30,11 +30,10 @@
     </div>
 </script>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn  layui-btn-normal layui-btn-xs" lay-event="copy">复制</a>
-    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="reDownload">重下</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="copy"><i class="layui-icon layui-icon-list"></i></a>
+    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="reDownload"><i class="layui-icon layui-icon-release"></i></a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i></a>
 </script>
-
 
 <script src="https://www.layuicdn.com/layui-v2.6.8/layui.js"></script>
 
@@ -51,11 +50,7 @@
             , cols: [[{field: 'id', title: 'ID', sort: true, width: 80, totalRowText: '合计'}
                 , {
                     field: 'title', title: '标题', align: 'center', templet: function (res) {
-                        if (res.url.includes("read")) {
-                            return '<a href=http://t66y.com/' + res.url + '><em>' + res.title + '</em></a>'
-                        } else {
-                            return '<a href=http://t66y.com/htm_data/' + res.url + '><em>' + res.title + '</em></a>'
-                        }
+                        return '<a href="/preview?id=' + res.id + '">' + res.title + '</a>'
                     }
                 }
                 , {
@@ -119,7 +114,7 @@
                 , {field: 'publish_date', title: '发布时间', align: 'center', sort: true}
                 , {field: 'create_date', title: '下载时间', align: 'center', sort: true}
                 , {field: 'dir', title: '存储路径', align: 'center', sort: true}
-                , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 174}
+                , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 142}
             ]]
             , page: true
         });
@@ -152,8 +147,19 @@
             //console.log(obj)
             if (obj.event === 'del') {
                 layer.confirm('真的删除行么', function (index) {
-                    obj.del();
-                    layer.close(index);
+                    $.ajax({
+                        url: '/delData', method: 'post', data: {
+                            'type': 1, 'id': data.id
+                        }, success: function (data) {
+                            if (200 === data.code || '200' === data.code) {
+                                obj.del();
+                                layer.close(index);
+                            } else {
+                                layer.close(index);
+                                layer.msg('删除失败')
+                            }
+                        }
+                    })
                 });
             } else if (obj.event === 'edit') {
                 layer.prompt({

@@ -21,7 +21,7 @@
     var myChart = echarts.init(chartDom);
     var option;
     $.ajax({
-        url: '/spu', method: 'post', success: function (data) {
+        url: '/searchKey', method: 'post', success: function (data) {
             const jsonObject = jQuery.parseJSON(data);
             const data_list = (jsonObject.data).reverse()
             let xAxis_data = []
@@ -257,7 +257,7 @@
         const table = layui.table;
         table.render({
             elem: '#test'
-            , url: '/spu'
+            , url: '/searchKey'
             , toolbar: '#toolbarDemo'
             , title: '成功信息表'
             , totalRow: true

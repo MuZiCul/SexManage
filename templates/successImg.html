@@ -10,25 +10,38 @@
     <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui/css/layui.css" media="all">
 </head>
 <body>
-
+<img src="https://s1.xoimg.com/i/2022/06/21/yse6r8.jpg" id="preview" style="position: absolute;
+    width: 500px;
+    margin-top: 100px;
+    z-index: 22;
+    margin-left: 303px;
+    display: none;" alt="图片加载失败">
 <table class="layui-hide" id="test" lay-filter="test"></table>
+
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-
         <button class="layui-btn layui-btn-sm" lay-event="isTips">Tips：点击Url打开原网页</button>
     </div>
 </script>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="copy">复制</a>
-    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="reDownload">重下</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="copy"><i class="layui-icon layui-icon-list"></i></a>
+    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="reDownload"><i class="layui-icon layui-icon-release"></i></a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i></a>
 </script>
 
 
 <script src="https://www.layuicdn.com/layui-v2.6.8/layui.js"></script>
 
 <script type="text/javascript">
+
+    function showimg(url) {
+        $('#preview').css('display','block')
+        $('#preview').attr('src', url)
+    }
+    function closeImg() {
+        $('#preview').css('display','none')
+    }
     layui.use('table', function () {
         const table = layui.table;
         table.render({
@@ -38,10 +51,12 @@
             , title: '成功信息表'
             , totalRow: true
             , cellMinWidth: 80
-            , cols: [[{field: 'id', title: 'ID', sort: true, width: 80, totalRowText: '合计'}
+            , cols: [[{field: 'id', title: 'ID', sort: true, width: 80, totalRowText: '合计',templet: function (res) {
+                return '<a id="title" onmouseleave = "closeImg()" onmouseover="showimg(\''+ res.url +'\')" >' + res.id + '</a>'
+                }}
                 , {
                     field: 'title', title: '主题', align: 'center', templet: function (res) {
-                        return '<a href=' + res.url + '><em>' + res.title + '</em></a>'
+                        return '<a id="title" onmouseleave = "closeImg()" onmouseover="showimg(\''+ res.url +'\')" href="/previewImg?id=' + res.id + '"><em>' + res.title + '</em></a>'
                     }
                 }
                 , {field: 'url', title: 'Url', align: 'center', sort: true}
@@ -63,7 +78,7 @@
                     }
                 }
                 , {field: 'create_date', title: '创建时间', align: 'center', sort: true}
-                , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 174}
+                , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 142}
             ]]
             , page: true
         });
@@ -92,11 +107,21 @@
         //监听行工具事件
         table.on('tool(test)', function (obj) {
             const data = obj.data;
-            //console.log(obj)
             if (obj.event === 'del') {
                 layer.confirm('真的删除行么', function (index) {
-                    obj.del();
-                    layer.close(index);
+                    $.ajax({
+                        url: '/delImgData', method: 'post', data: {
+                            'type': 1, 'id': data.id
+                        }, success: function (data) {
+                            if (200 === data.code || '200' === data.code) {
+                                obj.del();
+                                layer.close(index);
+                            } else {
+                                layer.close(index);
+                                layer.msg('删除失败')
+                            }
+                        }
+                    })
                 });
             } else if (obj.event === 'edit') {
                 layer.prompt({
@@ -149,6 +174,7 @@
         return flag;
     }
 </script>
+
 
 </body>
 </html>

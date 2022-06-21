@@ -74,7 +74,6 @@
     </style>
 </head>
 <body>
-
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
         <div class="layui-logo layui-hide-xs layui-bg-black">
@@ -88,12 +87,22 @@
             <!-- 移动端显示 -->
             <!-- web、移动端显示 -->
             <li class="layui-nav-item layui-show-xs-inline-block " lay-header-event="menuLeft">
-                <a href="javascript:;"> <i id="leftEnumIcon" class="layui-icon layui-icon-shrink-right"></i></a>
+                <a > <i id="leftEnumIcon" class="layui-icon layui-icon-shrink-right"></i></a>
             </li>
             <!--刷新局部页面-->
             <li class="layui-nav-item">
-                <a href="javascript:;" onclick="document.getElementById('demoAdmin').contentWindow.location.reload()" title="刷新页面">
+                <a onclick="document.getElementById('demoAdmin').contentWindow.location.reload()"
+                   title="刷新页面">
                     <i class="layui-icon layui-icon-refresh-1" style="color: #eeffef;"></i>
+                </a>
+            </li>
+            <li class="layui-nav-item">
+                <input type="text" id="search" style="height: 25px;" autocomplete="off" placeholder="Search"
+                       class="layui-input">
+            </li>
+            <li class="layui-nav-item">
+                <a onclick="searchKey()" title="查找">
+                    <i class="layui-icon layui-icon-search" style="color: #eeffef;"></i>
                 </a>
             </li>
 
@@ -124,8 +133,10 @@
                     {% if data %}{{ data.get('username') }}{% endif %}
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a href="{{ url_for('user.sensitive') }}">Sensitive</a></dd>
-                    <dd><a href="{{ url_for('login.logoff') }}">Sign out</a></dd>
+                    <dd><a href="{{ url_for('user.sensitive') }}"><i class="layui-icon layui-icon-water"> Sensitive</i></a>
+                    </dd>
+                    <dd><a href="{{ url_for('login.logoff') }}"><i class="layui-icon layui-icon-logout"> Sign
+                        out</i></a></dd>
                 </dl>
             </li>
             {#            <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>#}
@@ -157,7 +168,7 @@
                         <dd><a href="javascript:;" onclick="open_page('fail')">
                             <i class="layui-icon layui-icon-close" style="font-size: 14px; margin-right: 5px;"></i>
                             <cite>失败主题数据</cite></a></dd>
-                         <dd><a href="javascript:;" onclick="open_page('failImg')">
+                        <dd><a href="javascript:;" onclick="open_page('failImg')">
                             <i class="layui-icon layui-icon-face-cry" style="font-size: 14px; margin-right: 5px;"></i>
                             <cite>失败图片数据</cite>
                         </a></dd>
@@ -278,6 +289,15 @@
 </div>
 <script src="https://www.layuicdn.com/layui-v2.6.8/layui.js"></script>
 <script type="text/javascript">
+    function searchKey() {
+        let value = $('#search').val()
+        value = value.replace(/\s+/g,"");
+        if (value.length<1){
+            layer.msg('请输入查询内容！')
+        }else {
+            $('iframe').attr('src', 'search?key=' + value);
+        }
+    }
     $(document).ready(function () {
         getWindowInfo()
     });

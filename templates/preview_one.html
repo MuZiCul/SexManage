@@ -49,54 +49,19 @@
 <div class="title-top">
 <fieldset class="layui-elem-field layui-field-title ">
     <legend id="legend">
-        {% if inf %}
-            {{ inf.kind }}{{ inf.title }} - {{ inf.quality }} - Size:{{ inf.all_size }}MB - Avg:{{ inf.avg_size }}MB -
-            Nums:{{ inf.img_size }}P - PC:{{ inf.pcImg }}P - Phone:{{ inf.phoneImg }}P -Time:{{ inf.create_date }}
+        {% if img %}
+            Url:{{ img }}
         {% endif %}
     </legend>
 </fieldset>
-{% if not img %}
-    暂无图片预览
-{% endif %}
 </div>
 <button type="button" class="layui-btn" style="margin-top: 80px;position: fixed;" onclick="window.history.go(-1)"><i class="layui-icon layui-icon-return"></i></button>
-<ul class="flow-default" id="previewImg"></ul>
+<ul class="flow-default" id="previewImg">
+    <li><img class="img_src" style="width: 100%" alt="" src='{{ img }}'></li>
+</ul>
 
 
 <!-- 注意：项目正式环境请勿引用该地址 -->
 <script src="https://www.layuicdn.com/layui-v2.6.8/layui.js"></script>
-
-<script>
-    layui.use('flow', function () {
-        const flow = layui.flow;
-        let srcList = []
-        {% for i in img %}
-            srcList.push("{{ i.url }}")
-        {% endfor %}
-        flow.load({
-            elem: '#previewImg' //流加载容器
-            ,scrollElem: '#previewImg' //滚动条所在元素，一般不用填，此处只是演示需要。
-            ,isAuto: false
-            ,isLazyimg: true
-            , done: function (page, next) { //执行下一页的回调
-                setTimeout(function () {
-                    const lis = [];
-                    let index = 0
-                    for (let i = 0; i < 5; i++) {
-                        index = (page-1)*5 + i
-                        if (index<srcList.length){
-                        lis.push('<li><img class="img_src" style="width: 100%" alt="" src=' + srcList[index] + '><p>' + srcList[index] + '</p></li>')
-                        }else {
-                            break
-                        }
-                    }
-                    //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
-                    next(lis.join(''), index<srcList.length);
-                }, 500);
-            }
-        });
-    });
-</script>
-
 </body>
 </html>

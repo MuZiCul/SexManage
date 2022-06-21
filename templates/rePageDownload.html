@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
-    <title>下载失败数据</title>
+    <title>重新下载列表</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -16,18 +16,13 @@
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        {#        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>#}
-        {#        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>#}
-        {#        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>#}
         <button id="clear" class="layui-btn layui-btn-sm" lay-event="isClear">清理列表</button>
         <button class="layui-btn layui-btn-sm" lay-event="isTips">Tips：点击标题打开原网页</button>
     </div>
 </script>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="copy">复制</a>
-    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="reDownload">重下</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="copy"><i class="layui-icon layui-icon-list"></i></a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i></a>
 </script>
 
 
@@ -38,15 +33,15 @@
         const table = layui.table;
         table.render({
             elem: '#test'
-            , url: '/fpu'
+            , url: '/rpu'
             , toolbar: '#toolbarDemo'
-            , title: '失败信息表'
+            , title: '重下信息表'
             , totalRow: true
             , cellMinWidth: 80
             , cols: [[{field: 'id', title: 'ID', sort: true, width: 80, totalRowText: '合计'}
                 , {
                     field: 'title', title: '标题', align: 'center', templet: function (res) {
-                        return '<a href=http://t66y.com/' + res.url + '><em>' + res.title + '</em></a>'
+                        return '<a id="title_'+ res.id +'" href="/rePreview?id=' + res.id + '">' + res.title + '</a>'
                     }
                 }
                 , {
@@ -54,30 +49,26 @@
                         return '<em>' + res.url + '</em>'
                     }
                 }
-                , {field: 'publish_date', title: '发布时间', align: 'center', sort: true}
-                , {field: 'create_date', title: '失败时间', align: 'center', sort: true}
-                , {field: 'reason', title: '失败原因', align: 'center', sort: true}
-                , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 174}
+                , {
+                    field: 'state', title: '重下状态', align: 'center', sort: true, templet: function (res) {
+                        if (res.state) {
+                            return '已完成'
+                        } else {
+                            $(eval('title_'+res.id)).attr('href','http://t66y.com/'+res.url)
+                            return '未开始'
+                        }
+                    }
+                }
+                , {field: 'count', title: '尝试次数', align: 'center', sort: true}
+                , {field: 'create_date', title: '创建时间', align: 'center', sort: true}
+                , {fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', minWidth: 101}
             ]]
             , page: true
         });
 
         //工具栏事件
         table.on('toolbar(test)', function (obj) {
-            const checkStatus = table.checkStatus(obj.config.id);
-            let value;
             switch (obj.event) {
-                case 'getCheckData':
-                    value = checkStatus.data;
-                    layer.alert(JSON.stringify(value));
-                    break;
-                case 'getCheckLength':
-                    value = checkStatus.data;
-                    layer.msg('选中了：' + value.length + ' 个');
-                    break;
-                case 'isAll':
-                    layer.msg(checkStatus.isAll ? '全选' : '未全选')
-                    break;
                 case 'isTips':
                     layer.msg('Tips：点击标题可打开原网页哦！')
                     break;
@@ -85,7 +76,7 @@
                     layer.msg('开始清理失败列表！')
                     $("#clear").attr("disabled", true);
                     $.ajax({
-                        url: '/clearFailPage', method: 'post', success: function (data) {
+                        url: '/clearReDownPage', method: 'post', success: function (data) {
                             if (200 === data.code || '200' === data.code) {
                                 layer.msg(data.msg)
                                 $("#clear").attr("disabled", false);
@@ -102,8 +93,8 @@
             if (obj.event === 'del') {
                 layer.confirm('真的删除行么', function (index) {
                     $.ajax({
-                        url: '/delData', method: 'post', data: {
-                            'type': 2, 'id': data.id
+                        url: '/delReData', method: 'post', data: {
+                            'type': 1, 'id': data.id
                         }, success: function (data) {
                             if (200 === data.code || '200' === data.code) {
                                 obj.del();
@@ -115,32 +106,9 @@
                         }
                     })
                 });
-            } else if (obj.event === 'edit') {
-                layer.prompt({
-                    formType: 2
-                    , value: data.url
-                }, function (value, index) {
-                    obj.update({
-                        url: value
-                    });
-                    layer.close(index);
-                });
             } else if (obj.event === 'copy') {
                 const flag = copyText('http://t66y.com/' + data.url); //传递文本
                 layer.msg(flag ? "复制成功！" : "复制失败！");
-            } else if (obj.event === 'reDownload') {
-                $.ajax({
-                    url: '/addAgainDownload', method: 'post', data: {
-                        'type': 0, 'id': data.id
-                    }, success: function (data) {
-                        if (200 === data.code || '200' === data.code) {
-                            obj.del();
-                            layer.msg(data.msg)
-                        } else {
-                            layer.msg(data.msg)
-                        }
-                    }
-                })
             }
         });
     });
