@@ -275,7 +275,7 @@ def searchKey():
     start = (page - 1) * limit
     end = start + limit
     key = session.get('key')
-    data = SuccessPageUrlModel.query.filter(SuccessPageUrlModel.title.like("%" + key + "%")).all()
+    data = SuccessPageUrlModel.query.filter(SuccessPageUrlModel.title.like("%" + key + "%")).order_by(db.text('-create_date')).all()
     data_list = []
     DQ = ['垃圾', '劣质', '一般', '清晰', '标清', '高清',
           '超高', '顶级', '巨顶', '动图']
