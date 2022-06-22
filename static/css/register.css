@@ -1,3 +1,11 @@
 .jumbotron {
     width: 20%
 }
+.lead {
+    font-size: 40px;
+    text-align: center;
+}
+#groups {
+    width: 100%;
+    margin: 0;
+}

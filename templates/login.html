@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes" />
     <title>Login</title>
     <link href="https://cdn.staticfile.org/twitter-bootstrap/4.6.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static',filename='css/init.css') }}">
@@ -24,15 +25,13 @@
 </div>
 <div>
     <div class="text-center">
-        <img src="../static/images/logo.ico" class="rounded" alt="/">
+        <img src="../static/images/logo.ico" id="rounded" class="rounded" alt="/">
     </div>
-    <h1 class="display-4" style="text-align: center;font-weight: 500;">Hello!</h1>
-    <p class="lead" style="text-align: center;font-size: 40px;">You are about to enter a new and unprecedented
-        world!</p>
+    <p id="lead" class="lead" >爬虫后台数据管理</p>
 </div>
-<div style="width: 100%;" class="row">
+<div id="groups" class="row">
     <div class="col"></div>
-    <div class="jumbotron col">
+    <div id="jumbotron" class="jumbotron col">
         <hr class="my-4">
         <form method="post" action="{{ url_for('login.login') }}" onsubmit="return CheckKeyword('login')">
             <div class="form-group">

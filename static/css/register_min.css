@@ -6,3 +6,28 @@
     width: 70%;
     margin-left: 15%;
 }
+.lead {
+    font-size: 40px;
+    text-align: center;
+}
+#groups {
+    width: 100%;
+    margin: 0;
+}
+
+/* 移动端 */
+@media screen and (max-width: 768px) {
+    .rounded {
+        width: 100px;
+    }
+    #h1 {
+        font-size:2.5rem;
+    }
+    #lead {
+        font-size: 20px;
+    }
+    #jumbotron {
+        padding: 0;
+    }
+
+}
