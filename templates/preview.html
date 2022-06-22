@@ -14,89 +14,269 @@
             position: fixed;
             width: 100%;
         }
+
         .flow-default li {
             margin: 0 auto;
             width: 80%;
             padding-top: 20px;
             text-align: center;
         }
+
         .flow-default {
             flex-direction: column;
             justify-content: center;
             padding-top: 50px;
         }
+
         .img_src {
             border-radius: 10px;
             border: solid 10px #EFEFEF;
             box-shadow: 0 10px 100px rgb(0 0 0 / 30%);
         }
+
         /* 移动端 */
         @media screen and (max-width: 768px) {
             #legend {
                 font-size: 14px
             }
+
             .flow-default {
-            flex-direction: column;
-            justify-content: center;
-            padding-top: 100px;
-            padding-bottom: 100px;
+                flex-direction: column;
+                justify-content: center;
+                padding-top: 100px;
+                padding-bottom: 100px;
             }
         }
+
+        .maskweap {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            display: -webkit-flex;
+            -webkit-justify-content: center;
+            justify-content: center;
+            -webkit-align-items: center;
+            align-items: center;
+            display: none;
+        }
+
+        .maskweap .imgshow {
+            width: 100%;
+            box-sizing: border-box;
+            height: 100%;
+            display: flex;
+            display: -webkit-flex;
+            -webkit-align-items: center;
+            align-items: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+        }
+
+        .maskweap .imgshow img {
+            display: block;
+            width: auto;
+            max-width: 70%;
+            height: auto;
+            max-height: 99%;
+            box-sizing: border-box;
+            padding: 10px;
+            background-color: #FFFFFF;
+        }
+
+        #PrevImg {
+            font-size: 50px;
+        }
+
+        #nextImg {
+            font-size: 50px;
+        }
+
+        #nextImg:hover {
+            font-size: 80px;
+        }
+
+        #PrevImg:hover {
+            font-size: 80px;
+        }
+
+
     </style>
 </head>
 <body>
 
 <div class="title-top">
-<fieldset class="layui-elem-field layui-field-title ">
-    <legend id="legend">
-        {% if inf %}
-            {{ inf.kind }}{{ inf.title }} - {{ inf.quality }} - Size:{{ inf.all_size }}MB - Avg:{{ inf.avg_size }}MB -
-            Nums:{{ inf.img_size }}P - PC:{{ inf.pcImg }}P - Phone:{{ inf.phoneImg }}P -Time:{{ inf.create_date }}
-        {% endif %}
-    </legend>
-</fieldset>
-{% if not img %}
-    暂无图片预览
-{% endif %}
+    <fieldset class="layui-elem-field layui-field-title ">
+        <legend id="legend">
+            {% if inf %}
+                {{ inf.kind }}{{ inf.title }} - {{ inf.quality }} - Size:{{ inf.all_size }}MB - Avg:{{ inf.avg_size }}MB
+                -
+                Nums:{{ inf.img_size }}P - PC:{{ inf.pcImg }}P - Phone:{{ inf.phoneImg }}P -Time:{{ inf.create_date }}
+            {% endif %}
+        </legend>
+    </fieldset>
+    {% if not img %}
+        暂无图片预览
+    {% endif %}
 </div>
-<button type="button" class="layui-btn" style="margin-top: 80px;position: fixed;" onclick="window.history.go(-1)"><i class="layui-icon layui-icon-return"></i></button>
+<button type="button" class="layui-btn layui-btn-primary layui-border-black" style="margin-top: 80px;position: fixed;"
+        onclick="window.history.go(-1)"><i class="layui-icon layui-icon-return"></i></button>
 <ul class="flow-default" id="previewImg"></ul>
+<div class="maskweap">
+    <button type="button" class="layui-btn layui-btn-lg layui-btn-primary layui-border"
+            onclick="play_img()"
+            style="right: 150px;top: 20px;border: none;position: fixed;"><i
+            class="layui-icon layui-icon-play" style="font-size: 50px;"></i></button>
+    <button type="button" class="layui-btn layui-btn-lg layui-btn-primary layui-border"
+            onclick="pause_img()"
+            style="right: 87px;top: 20px;border: none;position: fixed;"><i
+            class="layui-icon layui-icon-pause" style="font-size: 50px;"></i></button>
+    <button type="button" class="layui-btn layui-btn-lg layui-btn-primary layui-border"
+            onclick="close_maskweap()"
+            style="right: 20px;top: 20px;border: none;position: fixed;"><i
+            class="layui-icon layui-icon-reduce-circle" style="font-size: 55px;"></i></button>
+    <div class="imgshow">
+        <button type="button" class="layui-btn layui-btn-lg layui-btn-primary layui-border"
+                onclick="PrevImg()"
+                style="border: none;position: fixed;left: 50px;"><i
+                class="layui-icon layui-icon-left" id="PrevImg"></i></button>
 
+        <button type="button" class="layui-btn layui-btn-lg layui-btn-primary layui-border"
+                onclick="nextImg()"
+                style="border: none;position: fixed;right: 50px;"><i
+                class="layui-icon layui-icon-right" id="nextImg"></i></button>
+    </div>
+</div>
 
-<!-- 注意：项目正式环境请勿引用该地址 -->
 <script src="https://www.layuicdn.com/layui-v2.6.8/layui.js"></script>
 
 <script>
+    let val_img = ''
+    let end_img = ''
+    let srcList = []
+    let interval = ''
+    let images = [];
+
+    function play_img() {
+        nextImg()
+        interval = setInterval("nextImg()", 2000);
+    }
+
+    function pause_img() {
+        window.clearInterval(interval)
+    }
+
+    function deleteChild() {
+        const imgremove = $(".imgshow").find("img")
+        for (let i = 0; i < imgremove.length; i++) {
+            imgremove[i].remove()
+        }
+    }
+
+    function showimg(val) {
+        end_img = srcList.length - 1
+        val_img = val
+        //添加到弹窗img
+        $('.imgshow').prepend(images[val_img])
+        // 显示弹窗
+        $(".maskweap").fadeIn();
+        $(".flow-default").css('display', 'none')
+    }
+
+    function nextImg() {
+        if (val_img === end_img) {
+            val_img = 0
+            layer.tips('最后一页哦！')
+        } else {
+            val_img = val_img + 1
+        }
+        deleteChild()
+        $('.imgshow').prepend(images[val_img])
+    }
+
+    function PrevImg() {
+        if (val_img === 0) {
+            val_img = end_img
+        } else {
+            val_img = val_img - 1
+        }
+        let src = srcList[val_img]
+        deleteChild()
+        $('.imgshow').prepend(images[val_img])
+    }
+
+    function close_maskweap() {
+        window.clearInterval(interval)
+        $(".maskweap").fadeOut(); //弹窗关闭
+        $(".flow-default").css('display', 'block')
+    }
+
+
+    function copyText(text) {
+        const textarea = document.createElement("input");//创建input对象
+        const currentFocus = document.activeElement;//当前获得焦点的元素
+        document.body.appendChild(textarea);//添加元素
+        textarea.value = text;
+        textarea.focus();
+        if (textarea.setSelectionRange)
+            textarea.setSelectionRange(0, textarea.value.length);//获取光标起始位置到结束位置
+        else
+            textarea.select();
+        let flag;
+        try {
+            flag = document.execCommand("copy");//执行复制
+        } catch (eo) {
+            flag = false;
+        }
+        document.body.removeChild(textarea);//删除元素
+        currentFocus.focus();
+        layer.msg(flag ? "复制成功！" : "复制失败！");
+        return flag;
+    }
+
+    function openImg(url) {
+        window.open(url)
+    }
+
     layui.use('flow', function () {
         const flow = layui.flow;
-        let srcList = []
         {% for i in img %}
             srcList.push("{{ i.url }}")
         {% endfor %}
+        for (let i = 0; i < srcList.length; i++) {
+            images[i] = new Image()
+            images[i].className = 'bigimg'
+            images[i].alt = '图片加载失败'
+            images[i].src = srcList[i]
+        }
         flow.load({
             elem: '#previewImg' //流加载容器
-            ,scrollElem: '#previewImg' //滚动条所在元素，一般不用填，此处只是演示需要。
-            ,isAuto: false
-            ,isLazyimg: true
+            , scrollElem: '#previewImg' //滚动条所在元素，一般不用填，此处只是演示需要。
+            , isAuto: false
+            , isLazyimg: true
             , done: function (page, next) { //执行下一页的回调
                 setTimeout(function () {
                     const lis = [];
                     let index = 0
                     for (let i = 0; i < 5; i++) {
-                        index = (page-1)*5 + i
-                        if (index<srcList.length){
-                        lis.push('<li><img class="img_src" style="width: 100%" alt="" src=' + srcList[index] + '><p>' + srcList[index] + '</p></li>')
-                        }else {
+                        index = (page - 1) * 5 + i
+                        if (index < srcList.length) {
+                            lis.push('<li><img onclick="showimg(' + index + ')" class="img_src" style="width: 100%" alt="" src=' + srcList[index] + '><button type="button" style="margin-top: 10px;" class="layui-btn layui-btn-primary layui-border-black"><a href=\'' + srcList[index] + '\' download " >下载图片</a></button><button type="button" style="margin-top: 10px;" class="layui-btn layui-btn-primary layui-border-black" onclick="copyText(\'' + srcList[index] + '\')">复制链接</button><button type="button" style="margin-top: 10px;" class="layui-btn layui-btn-primary layui-border-black" onclick="openImg(\'' + srcList[index] + '\')">单独打开</button></li>')
+                        } else {
                             break
                         }
                     }
                     //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
-                    next(lis.join(''), index<srcList.length);
+                    next(lis.join(''), index < srcList.length);
                 }, 500);
             }
         });
     });
 </script>
+
 
 </body>
 </html>

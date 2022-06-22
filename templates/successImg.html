@@ -10,12 +10,21 @@
     <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui/css/layui.css" media="all">
 </head>
 <body>
-<img src="https://s1.xoimg.com/i/2022/06/21/yse6r8.jpg" id="preview" style="position: absolute;
-    width: 500px;
-    margin-top: 100px;
-    z-index: 22;
-    margin-left: 303px;
-    display: none;" alt="图片加载失败">
+<img src="https://s1.xoimg.com/i/2022/06/22/gk0m5w.jpg" id="preview" class="preview" alt="图片加载失败">
+<style >
+    .preview {
+        position: absolute;
+        max-width: 500px;
+        min-width: 200px;
+        margin-top: 5%;
+        z-index: 22;
+        display: none;
+        margin-left: 30%;
+        border-radius: 10px;
+        border: solid 8px #EFEFEF;
+        box-shadow: 0 10px 100px rgb(0 0 0 / 100%);
+    }
+</style>
 <table class="layui-hide" id="test" lay-filter="test"></table>
 
 
@@ -26,7 +35,8 @@
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="copy"><i class="layui-icon layui-icon-list"></i></a>
-    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="reDownload"><i class="layui-icon layui-icon-release"></i></a>
+    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="reDownload"><i
+            class="layui-icon layui-icon-release"></i></a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i></a>
 </script>
 
@@ -36,12 +46,14 @@
 <script type="text/javascript">
 
     function showimg(url) {
-        $('#preview').css('display','block')
+        $('#preview').css('display', 'block')
         $('#preview').attr('src', url)
     }
+
     function closeImg() {
-        $('#preview').css('display','none')
+        $('#preview').css('display', 'none')
     }
+
     layui.use('table', function () {
         const table = layui.table;
         table.render({
@@ -51,12 +63,14 @@
             , title: '成功信息表'
             , totalRow: true
             , cellMinWidth: 80
-            , cols: [[{field: 'id', title: 'ID', sort: true, width: 80, totalRowText: '合计',templet: function (res) {
-                return '<a id="title" onmouseleave = "closeImg()" onmouseover="showimg(\''+ res.url +'\')" >' + res.id + '</a>'
-                }}
+            , cols: [[{
+                field: 'id', title: 'ID', sort: true, width: 80, totalRowText: '合计', templet: function (res) {
+                    return '<a onmouseleave = "closeImg()" onmouseover="showimg(\'' + res.url + '\')" >' + res.id + '</a>'
+                }
+            }
                 , {
                     field: 'title', title: '主题', align: 'center', templet: function (res) {
-                        return '<a id="title" onmouseleave = "closeImg()" onmouseover="showimg(\''+ res.url +'\')" href="/previewImg?id=' + res.id + '"><em>' + res.title + '</em></a>'
+                        return '<a onmouseleave = "closeImg()" onmouseover="showimg(\'' + res.url + '\')" href="/previewImg?id=' + res.id + '"><em>' + res.title + '</em></a>'
                     }
                 }
                 , {field: 'url', title: 'Url', align: 'center', sort: true}

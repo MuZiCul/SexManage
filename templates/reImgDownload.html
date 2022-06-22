@@ -11,12 +11,21 @@
     <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
 </head>
 <body>
-<img src="https://s1.xoimg.com/i/2022/06/21/yse6r8.jpg" id="preview" style="position: absolute;
-    width: 500px;
-    margin-top: 100px;
-    z-index: 22;
-    margin-left: 303px;
-    display: none;" alt="图片加载失败">
+<img src="https://s1.xoimg.com/i/2022/06/22/gk0m5w.jpg" id="preview" class="preview" alt="图片加载失败">
+<style >
+    .preview {
+        position: absolute;
+        max-width: 500px;
+        min-width: 200px;
+        margin-top: 5%;
+        z-index: 22;
+        display: none;
+        margin-left: 30%;
+        border-radius: 10px;
+        border: solid 8px #EFEFEF;
+        box-shadow: 0 10px 100px rgb(0 0 0 / 100%);
+    }
+</style>
 <table class="layui-hide" id="test" lay-filter="test"></table>
 
 <script type="text/html" id="toolbarDemo">
@@ -55,12 +64,12 @@
             , cols: [[
                 {
                     field: 'id', title: 'ID', sort: true, width: 80, totalRowText: '合计', templet: function (res) {
-                        return '<a id="title" onmouseleave = "closeImg()" onmouseover="showimg(\'' + res.url + '\')" >' + res.id + '</a>'
+                        return '<a onmouseleave = "closeImg()" onmouseover="showimg(\'' + res.url + '\')" >' + res.id + '</a>'
                     }
                 }
                 , {
                     field: 'title', title: '标题', align: 'center', templet: function (res) {
-                        return '<a href="/rePreview_one?url=' + res.url + '"><em>' + res.title + '</em></a>'
+                        return '<a onmouseleave = "closeImg()" onmouseover="showimg(\'' + res.url + '\')" href="/rePreview_one?url=' + res.url + '"><em>' + res.title + '</em></a>'
                     }
                 }
                 , {
