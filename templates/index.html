@@ -63,12 +63,24 @@
         }
     </script>
     <style>
+        #search {
+            height: 25px;
+        }
+
         /* 移动端 */
         @media screen and (max-width: 768px) {
             .layui-layout-admin .layui-layout-left,
             .layui-layout-admin .layui-body,
             .layui-layout-admin .layui-footer {
                 left: 0;
+            }
+
+            #getfooter {
+                display: none;
+            }
+
+            #search {
+                width: 65px;
             }
         }
     </style>
@@ -87,7 +99,7 @@
             <!-- 移动端显示 -->
             <!-- web、移动端显示 -->
             <li class="layui-nav-item layui-show-xs-inline-block " lay-header-event="menuLeft">
-                <a > <i id="leftEnumIcon" class="layui-icon layui-icon-shrink-right"></i></a>
+                <a> <i id="leftEnumIcon" class="layui-icon layui-icon-shrink-right"></i></a>
             </li>
             <!--刷新局部页面-->
             <li class="layui-nav-item">
@@ -97,7 +109,7 @@
                 </a>
             </li>
             <li class="layui-nav-item">
-                <input type="text" id="search" style="height: 25px;" autocomplete="off" placeholder="Search"
+                <input type="text" id="search" autocomplete="off" placeholder="Search"
                        class="layui-input">
             </li>
             <li class="layui-nav-item">
@@ -289,15 +301,33 @@
 </div>
 <script src="https://www.layuicdn.com/layui-v2.6.8/layui.js"></script>
 <script type="text/javascript">
+    const sUserAgent = navigator.userAgent;
+    if (sUserAgent.indexOf('Android') > -1 || sUserAgent.indexOf('iPhone') > -1
+        || sUserAgent.indexOf('iPad') > -1 || sUserAgent.indexOf('iPod') > -1
+        || sUserAgent.indexOf('Symbian') > -1) {
+        const btn = $("#leftEnumIcon");
+        if (btn.hasClass('layui-icon-shrink-right')) {
+            menuHide(btn);
+            btn.addClass('btn-index');
+        }
+        function menuHide(btn) {
+        btn.removeClass(' layui-icon-shrink-right').addClass('layui-icon-spread-left');
+        $(".layui-side").animate({width: 'toggle'}); //toggle如果原来div是隐藏的就会把元素显示，如果原来是显示则隐藏
+        $(".zq-logo").animate({width: 'toggle'});
+        $(".layui-body").animate({left: '0px'});
+        $(".layui-footer").animate({left: '0px'});
+    }
+    }
     function searchKey() {
         let value = $('#search').val()
-        value = value.replace(/\s+/g,"");
-        if (value.length<1){
+        value = value.replace(/\s+/g, "");
+        if (value.length < 1) {
             layer.msg('请输入查询内容！')
-        }else {
+        } else {
             $('iframe').attr('src', 'search?key=' + value);
         }
     }
+
     $(document).ready(function () {
         getWindowInfo()
     });
@@ -345,6 +375,7 @@
                     var width = $(document.body).width();
                     var btn = $("leftEnumIcon");
                     if (width < 1000) {
+                        debugger
                         if (btn.hasClass('layui-icon-shrink-right')) {
                             menuShow(btn);
                         }

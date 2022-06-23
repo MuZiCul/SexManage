@@ -5,7 +5,8 @@
     <title>预览</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes"/>
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui/css/layui.css" media="all">
     <style>
@@ -34,18 +35,27 @@
             box-shadow: 0 10px 100px rgb(0 0 0 / 30%);
         }
 
-        /* 移动端 */
-        @media screen and (max-width: 768px) {
-            #legend {
-                font-size: 14px
-            }
+        #PrevImg {
+            border: none;
+            position: fixed;
+            left: 50px;
+        }
 
-            .flow-default {
-                flex-direction: column;
-                justify-content: center;
-                padding-top: 100px;
-                padding-bottom: 100px;
-            }
+        #nextImg {
+            border: none;
+            position: fixed;
+            right: 50px;
+        }
+
+        .maskweap .imgshow img {
+            display: block;
+            width: auto;
+            max-width: 70%;
+            height: auto;
+            max-height: 99%;
+            box-sizing: border-box;
+            padding: 5px;
+            background-color: #FFFFFF;
         }
 
         .maskweap {
@@ -76,16 +86,6 @@
             justify-content: center;
         }
 
-        .maskweap .imgshow img {
-            display: block;
-            width: auto;
-            max-width: 70%;
-            height: auto;
-            max-height: 99%;
-            box-sizing: border-box;
-            padding: 10px;
-            background-color: #FFFFFF;
-        }
 
         #PrevImg {
             font-size: 50px;
@@ -101,6 +101,39 @@
 
         #PrevImg:hover {
             font-size: 80px;
+        }
+
+        /* 移动端 */
+        @media screen and (max-width: 768px) {
+            #legend {
+                font-size: 14px
+            }
+
+            .flow-default {
+                flex-direction: column;
+                justify-content: center;
+                padding-top: 100px;
+                padding-bottom: 100px;
+            }
+
+            #PrevImg {
+                display: none;
+            }
+
+            #nextImg {
+                display: none;
+            }
+
+            .maskweap .imgshow img {
+                padding: 1px;
+            }
+
+            #returnHistory {
+                border: none;
+                left: -5px;
+                font-weight: 600;
+            }
+
         }
 
 
@@ -122,7 +155,7 @@
         暂无图片预览
     {% endif %}
 </div>
-<button type="button" class="layui-btn layui-btn-primary layui-border-black" style="margin-top: 80px;position: fixed;"
+<button type="button" id="returnHistory" class="layui-btn layui-btn-primary layui-border-black" style="margin-top: 80px;position: fixed;"
         onclick="window.history.go(-1)"><i class="layui-icon layui-icon-return"></i></button>
 <ul class="flow-default" id="previewImg"></ul>
 <div class="maskweap">
@@ -139,14 +172,12 @@
             style="right: 20px;top: 20px;border: none;position: fixed;"><i
             class="layui-icon layui-icon-reduce-circle" style="font-size: 55px;"></i></button>
     <div class="imgshow">
-        <button type="button" class="layui-btn layui-btn-lg layui-btn-primary layui-border"
-                onclick="PrevImg()"
-                style="border: none;position: fixed;left: 50px;"><i
+        <button type="button" id="PrevImg" class="layui-btn layui-btn-lg layui-btn-primary layui-border"
+                onclick="PrevImg()"><i
                 class="layui-icon layui-icon-left" id="PrevImg"></i></button>
 
-        <button type="button" class="layui-btn layui-btn-lg layui-btn-primary layui-border"
-                onclick="nextImg()"
-                style="border: none;position: fixed;right: 50px;"><i
+        <button type="button" id="nextImg" class="layui-btn layui-btn-lg layui-btn-primary layui-border"
+                onclick="nextImg()"><i
                 class="layui-icon layui-icon-right" id="nextImg"></i></button>
     </div>
 </div>
@@ -159,6 +190,37 @@
     let srcList = []
     let interval = ''
     let images = [];
+    let body = ''
+
+    // html、style 结构同上
+    function directionMonitor(body) {
+        let startX, startY, endX, endY;
+        body.addEventListener("touchstart", touchstart);
+        body.addEventListener("touchend", touchend);
+
+        function touchstart(e) {
+            startX = e.targetTouches[0].pageX;
+            startY = e.targetTouches[0].pageY;
+            body.removeEventListener("touchstart", touchstart);
+        }
+
+        function touchend(e) {
+            endX = e.changedTouches[0].pageX;
+            endY = e.changedTouches[0].pageY;
+            body.removeEventListener("touchend", touchend);
+
+            let horizontalStatus = endX > startX ? "向右滑动" : "向左滑动";
+            let verticalStatus = endY > startY ? "向下滑动" : "向上滑动";
+            if (endX > startX) {
+                nextImg()
+            } else {
+                PrevImg()
+            }
+            {##}
+            {#console.log(`当前的操作：${horizontalStatus}`);#}
+        }
+    }
+
 
     function play_img() {
         nextImg()
@@ -184,6 +246,8 @@
         // 显示弹窗
         $(".maskweap").fadeIn();
         $(".flow-default").css('display', 'none')
+        body = document.getElementsByClassName("bigimg")[0];
+        directionMonitor(body)
     }
 
     function nextImg() {
@@ -195,6 +259,8 @@
         }
         deleteChild()
         $('.imgshow').prepend(images[val_img])
+        body = document.getElementsByClassName("bigimg")[0];
+        directionMonitor(body)
     }
 
     function PrevImg() {
@@ -203,9 +269,10 @@
         } else {
             val_img = val_img - 1
         }
-        let src = srcList[val_img]
         deleteChild()
         $('.imgshow').prepend(images[val_img])
+        body = document.getElementsByClassName("bigimg")[0];
+        directionMonitor(body)
     }
 
     function close_maskweap() {
