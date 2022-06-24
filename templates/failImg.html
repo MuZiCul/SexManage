@@ -105,7 +105,7 @@
                 layer.confirm('真的删除行么', function (index) {
                     $.ajax({
                         url: '/delImgData', method: 'post', data: {
-                            'type': 0, 'id': data.id
+                            'type': 2, 'id': data.id
                         }, success: function (data) {
                             if (200 === data.code || '200' === data.code) {
                                 obj.del();
