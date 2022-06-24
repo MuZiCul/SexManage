@@ -95,3 +95,12 @@ class SuccessImgModel(db.Model):
     size = db.Column(db.Integer, default=0)
     page_id = db.Column(db.Integer, default=0)
     create_date = db.Column(db.DateTime, default=datetime.now)
+
+
+class EmailCaptchaModel(db.Model):
+    __tablename__ = "email_captcha"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email = db.Column(db.String(100), nullable=False, unique=True)
+    captcha = db.Column(db.String(200), nullable=False)
+    type = db.Column(db.Integer, default='1')
+    create_time = db.Column(db.DateTime, default=datetime.now)

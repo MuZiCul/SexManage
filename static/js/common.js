@@ -40,13 +40,13 @@ function pwdV(pwd) {
 
 }
 
-function getCaptcha($this, email) {
-    if (!emailV(email)) {
+function getCaptcha($this, account) {
+    if (!usernameV(account)) {
         return
     }
     $.ajax({
-        url: '/user/captcha', method: 'post', data: {
-            'email': email
+        url: '/captcha', method: 'post', data: {
+            'account': account
         }, success: function (res) {
             let code = res.code
             if (code === 200) {
@@ -197,7 +197,7 @@ function cstar(id) {
 
 window.onload = function () {
     const el = document.getElementById("logout");
-    if (el){
+    if (el) {
         el.onclick = clear;
     }
 }
@@ -398,40 +398,9 @@ function CheckKeyword(key) {
 }
 
 function bindCaptchaBtnClick() {
-    //注册验证码
-    $('#captcha-btn').on('click', function (event) {
-        event.stopImmediatePropagation();
-        getRegisterCaptcha($(this), $('input[name="email"]').val())
-    });
-    //找回密码邮箱验证码
     $('#retrieve_captcha_btn').on('click', function (event) {
         event.stopImmediatePropagation();
-        getCaptcha($(this), $('input[name="email"]').val())
-    });
-    //删除文章邮箱验证码
-    $('#delArticleForEmail_CaptchaBtn').on('click', function (event) {
-        event.stopImmediatePropagation();
-        getCaptcha($(this), $('input[name="delArticleForEmail"]').val())
-    });
-    //旧邮箱地址验证码
-    $('#changeEmailOldAds_captchaBtn').on('click', function (event) {
-        event.stopImmediatePropagation();
-        getCaptcha($(this), $('input[name="changeEmailOldAds"]').val())
-    });
-    //新邮箱地址验证码
-    $('#changeEmailNewAds_captchaBtn').on('click', function (event) {
-        event.stopImmediatePropagation();
-        getCaptcha($(this), $('input[name="changeEmailNewAds"]').val())
-    });
-    //修改密码邮箱验证码
-    $('#changePwdForEmail_Captcha').on('click', function (event) {
-        event.stopImmediatePropagation();
-        getCaptcha($(this), $('input[name="changePwdForEmail"]').val())
-    });
-    //注销邮箱验证码
-    $('#logoutForEmail_CaptchaBtn').on('click', function (event) {
-        event.stopImmediatePropagation();
-        getCaptcha($(this), $('input[name="logoutForEmail"]').val())
+        getCaptcha($(this), $('input[name="account"]').val())
     });
 }
 
